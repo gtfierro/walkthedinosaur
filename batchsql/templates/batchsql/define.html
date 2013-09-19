@@ -1,0 +1,13 @@
+<b>Here you define the database query</b>
+
+<p>Database Schema</p>
+<ul>
+{% for tablename, table in tables.items %}
+    <li>{{ tablename }}</li>
+    <ul>
+        {% for column in table.columns %}
+        <li>{{ column }}</li>
+        {% endfor %}
+    <ul>
+{% endfor %}
+</ul>
