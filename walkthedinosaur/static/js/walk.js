@@ -5,9 +5,9 @@ jQuery(function($) {
     tables = $.parseJSON(tables)
 
     var get_columns = function(tablename) {
-        $("#field option").remove();
+        $("#fields option").remove();
         $.each(tables[tablename], function(i, column) {
-            $("#field").append("<option value='"+column+"'>"+column+"</option>");
+            $("#fields").append("<option value='"+column+"'>"+column+"</option>");
         });
     }
 
