@@ -8,6 +8,18 @@
         {% for column in table.columns %}
         <li>{{ column }}</li>
         {% endfor %}
-    <ul>
+    </ul>
 {% endfor %}
 </ul>
+
+<p>
+<form action="submit" method="post">
+    {% csrf_token %}
+    <select name="tablename">
+        {% for tablename in tables.keys %}
+        <option value="{{ tablename }}">{{ tablename }}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" value="Submit Job" />
+</form>
+</p>
