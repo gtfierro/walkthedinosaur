@@ -5,33 +5,22 @@ creating connections to the database
 """
 
 import config
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData, Table, inspect
 
 def get_engine(configfile='config.ini'):
+    """
+    Uses configuration options in [configfile] to initialize an engine to generate
+    connections to the database
+    """
     options = config.get_config(configfile)
-    if options['type'] == 'sqlite3':
-        engine = create_engine('sqlite:///{db}'.format(**options))
+    if options['type'] == 'sqlite':
+        engine = create_engine('sqlite:///{db}'.format(**options), echo=True)
     return engine
 
 engine = get_engine()
- 
-def connect(func):
-    """
-    Decorator function that gives a connection to the function and closes it
-    afterwards.
-    [func] is the input function, which *must* accept a database connection object
-    as its first argument.
-
-    Sample usage:
-
-    @connect
-    def select_all(connection, tablename):
-        return connection.execute('select * from {0}'.format(tablename))
-    print select_all('mytable')
-    """
-    def inner(*args, **kwargs):
-        conn = engine.connect()
-        result = func(conn, *args, **kwargs)
-        conn.close()
-        return result
-    return inner
+metadata = MetaData(engine)
+# allows SQLAlchemy to access preexisting tables
+info = inspect(engine)
+tables = {} # list of tablenames in database
+for tablename in info.get_table_names():
+    tables[tablename] = Table(tablename, metadata, autoload=True)
