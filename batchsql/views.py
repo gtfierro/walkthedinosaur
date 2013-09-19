@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect 
+from django.core.urlresolvers import reverse
 from django.shortcuts import render
 
 from batchsql.models import QueuedJob
@@ -13,3 +14,7 @@ def define_query(request):
     tables = connection.tables
     context = {'tables': tables}
     return render(request, 'batchsql/define.html', context)
+
+def submit_query(request):
+    print request.POST
+    return HttpResponseRedirect('index')
