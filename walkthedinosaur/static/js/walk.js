@@ -19,4 +19,14 @@ jQuery(function($) {
         get_columns(tablename)
     });
 
+    $('#dataformat-selector button').click(function(e) {
+        $('button').each(function(i, button) {
+            $(button).removeClass('btn-success')
+        });
+        var format = $(e.target).data('format')
+        $(e.target).addClass('btn-success')
+        console.log(format);
+        $('#dataformat').val(format);
+    });
+
 });
