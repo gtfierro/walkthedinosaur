@@ -1,5 +1,8 @@
-<b>Welcome to the Index Page</b>
+{% extends "batchsql/base.html" %}
 
+{% block content %}
 <p>Currently, there are {{number_of_queries}} queries.</p>
 
 <p><a href="{% url 'define' %}">Define a new query</a></p>
+
+{% endblock content %}

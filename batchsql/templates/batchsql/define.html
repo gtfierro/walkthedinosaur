@@ -1,25 +1,58 @@
+{% extends "batchsql/base.html" %}
+{% block content %}
+{% load batchsql_filters %}
 <b>Here you define the database query</b>
 
+<script type="text/javascript">
+    var tables = "{{ tables|to_json }}";
+</script>
+
 <p>Database Schema</p>
+<!--
+<div class="row">
 <ul>
-{% for tablename, table in tables.items %}
-    <li>{{ tablename }}</li>
-    <ul>
-        {% for column in table.columns %}
-        <li>{{ column }}</li>
-        {% endfor %}
+    {% for tablename, columns in tables.items %}
+        <div class="col-md-1">
+            <li>{{ tablename }}</li>
+            <ul>
+                {% for column in columns %}
+                <li>{{ column }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
     </ul>
-{% endfor %}
-</ul>
+</div>
+-->
 
 <p>
-<form action="submit" method="post">
-    {% csrf_token %}
-    <select name="tablename">
-        {% for tablename in tables.keys %}
-        <option value="{{ tablename }}">{{ tablename }}</option>
-        {% endfor %}
-    </select>
-    <input type="submit" value="Submit Job" />
+<form class="form-horizontal" action="submit" method="post">
+    <div class="row">
+        {% csrf_token %}
+        <div id="tablename-choice" class="col-md-4">
+            <h3>Tablename</h3>
+            <div class="controls">
+                <select id="tablename" name="tablename" class="form-control">
+                    {% for tablename in tables.keys %}
+                    <option value="{{ tablename }}">{{ tablename }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div id="field-selection" class="col-md-4">
+            <h3>Fields</h3>
+            <select multiple size=10 id="field" class="form-control">
+            </select>
+        </div>
+        <div class="col-md-4">
+            <h3>Directions</h3>
+            <p>
+                Choose a table, then select multiple fields using shift+click or cmd+click.
+            </p>
+        </div>
+    </div>
+    <br />
+    <input class="btn btn-primary" type="submit" value="Submit Job" />
 </form>
 </p>
+{% endblock content %}
