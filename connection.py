@@ -23,4 +23,4 @@ metadata = MetaData(engine)
 info = inspect(engine)
 tables = {} # list of tablenames in database
 for tablename in info.get_table_names():
-    tables[tablename] = Table(tablename, metadata, autoload=True)
+    tables[tablename] = Table(tablename, metadata, autoload=True).columns
