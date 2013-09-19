@@ -4,6 +4,7 @@ from django.shortcuts import render
 
 from batchsql.models import QueuedJob
 import connection
+tables = connection.tables
 
 def index(request):
     number_of_queries = len(QueuedJob.objects.all())
@@ -11,10 +12,13 @@ def index(request):
     return render(request, 'batchsql/index.html', context)
 
 def define_query(request):
-    tables = connection.tables
     context = {'tables': tables}
     return render(request, 'batchsql/define.html', context)
 
 def submit_query(request):
     print request.POST
+    tablename = request.POST['tablename']
+    fields = request.POST.getlist('fields')
+    job = QueuedJob.create(tablename, fields)
+    job.save()
     return HttpResponseRedirect('index')

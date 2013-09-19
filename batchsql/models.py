@@ -18,6 +18,13 @@ class QueuedJob(models.Model):
                                         default=CSV)
     destination_email = models.CharField(max_length=50)
 
+    @classmethod
+    def create(klass, tablename, fields):
+        querystring = "select {0} from {1};".format(','.join(fields), tablename)
+        job = QueuedJob(query_string = querystring,
+                        destination_email = 'a@a.com')
+        return job
+
 class CompletedJob(models.Model):
     date_submitted = models.DateTimeField()
     date_completed = models.DateTimeField()
