@@ -1,9 +1,33 @@
 {% extends "batchsql/base.html" %}
 
 {% block content %}
-<p>Currently, there are {{number_of_queries}} jobs.</p>
-<p>There are {{number_of_finished}} finished jobs.</p>
 
 <p><a href="{% url 'define' %}">Define a new query</a></p>
+
+<p>Currently, there are {{number_of_queries}} jobs.</p>
+<table class="table table-striped">
+ <thead>
+     <tr>
+         <td>ID</td>
+         <td>Date Submitted</td>
+         <td>Query</td>
+         <td>Format</td>
+         <td><Email</td>
+     </tr>
+ </thead>
+ <tbody>
+ {% for qj in jobs %}
+ <tr>
+     <td>{{ qj.id }}</td>
+     <td>{{ qj.date_submitted }}</td>
+     <td>{{ qj.query_string }}</td>
+     <td>{{ qj.requested_format }}</td>
+     <td>{{ qj.destination_email }}</td>
+ </tr>
+ {% endfor %}
+ </tbody>
+</table>
+<p>There are {{number_of_finished}} finished jobs.</p>
+
 
 {% endblock content %}

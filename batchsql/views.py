@@ -10,6 +10,7 @@ def index(request):
     number_of_queries = len(QueuedJob.objects.all())
     number_of_finished = len(CompletedJob.objects.all())
     context = {'number_of_queries': number_of_queries,
+               'jobs': QueuedJob.objects.all(),
                'number_of_finished': number_of_finished}
     return render(request, 'batchsql/index.html', context)
 
