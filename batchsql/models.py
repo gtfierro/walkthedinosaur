@@ -12,7 +12,7 @@ FORMAT_CHOICES = (
 )
 
 class QueuedJob(models.Model):
-    id = models.CharField(max_length=50, primary_key=True, default=str(uuid1()))
+    id = models.CharField(max_length=50, primary_key=True)
     date_submitted = models.DateTimeField(default=datetime.now())
     query_string = models.TextField()
     requested_format = models.CharField(max_length=3,
@@ -23,7 +23,8 @@ class QueuedJob(models.Model):
     @classmethod
     def create(klass, tablename, fields, requested_format, destination_email):
         querystring = "select {0} from {1};".format(','.join(fields), tablename)
-        job = QueuedJob(query_string = querystring,
+        job = QueuedJob(id = str(uuid1()),
+                        query_string = querystring,
                         requested_format = requested_format,
                         destination_email = destination_email)
         return job
