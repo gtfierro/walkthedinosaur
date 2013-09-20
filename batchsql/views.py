@@ -18,9 +18,10 @@ def define_query(request):
     return render(request, 'batchsql/define.html', context)
 
 def submit_query(request):
-    print request.POST
     tablename = request.POST['tablename']
     fields = request.POST.getlist('fields')
-    job = QueuedJob.create(tablename, fields)
+    email = request.POST.get('email')
+    requested_format = request.POST.get('dataformat')
+    job = QueuedJob.create(tablename, fields, requested_format, email)
     job.save()
     return HttpResponseRedirect('index')
