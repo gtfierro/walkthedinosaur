@@ -21,8 +21,9 @@ class QueuedJob(models.Model):
     destination_email = models.CharField(max_length=50)
 
     @classmethod
-    def create(klass, tablename, fields, requested_format, destination_email):
-        querystring = "select {0} from {1};".format(','.join(fields), tablename)
+    def create(klass, tablename, fields, requested_format, destination_email, querystring):
+        if not querystring:
+            querystring = "select {0} from {1};".format(','.join(fields), tablename)
         job = QueuedJob(id = str(uuid1()),
                         query_string = querystring,
                         requested_format = requested_format,

@@ -11,6 +11,9 @@
 <form class="form-horizontal" action="submit" method="post">
     <div class="row">
         {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="querystring" id="querystring" class="form-control" placeholder="SQL Query here">
+        </div>
         <div id="tablename-choice" class="col-md-4">
             <h3>Tablename</h3>
             <div class="controls">

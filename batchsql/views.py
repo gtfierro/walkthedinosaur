@@ -19,10 +19,11 @@ def define_query(request):
     return render(request, 'batchsql/define.html', context)
 
 def submit_query(request):
-    tablename = request.POST['tablename']
+    querystring = request.POST.get('querystring')
+    tablename = request.POST.get('tablename')
     fields = request.POST.getlist('fields')
     email = request.POST.get('email')
     requested_format = request.POST.get('dataformat')
-    job = QueuedJob.create(tablename, fields, requested_format, email)
+    job = QueuedJob.create(tablename, fields, requested_format, email, querystring)
     job.save()
     return HttpResponseRedirect('index')
