@@ -1,7 +1,8 @@
 {% extends "batchsql/base.html" %}
 
 {% block content %}
-<p>Currently, there are {{number_of_queries}} queries.</p>
+<p>Currently, there are {{number_of_queries}} jobs.</p>
+<p>There are {{number_of_finished}} finished jobs.</p>
 
 <p><a href="{% url 'define' %}">Define a new query</a></p>
 
