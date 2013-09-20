@@ -7,24 +7,6 @@
     var tables = "{{ tables|to_json }}";
 </script>
 
-<p>Database Schema</p>
-<!--
-<div class="row">
-<ul>
-    {% for tablename, columns in tables.items %}
-        <div class="col-md-1">
-            <li>{{ tablename }}</li>
-            <ul>
-                {% for column in columns %}
-                <li>{{ column }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endfor %}
-    </ul>
-</div>
--->
-
 <p>
 <form class="form-horizontal" action="submit" method="post">
     <div class="row">
