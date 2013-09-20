@@ -19,6 +19,18 @@ To set up the Django app, first make sure you have all the dependencies installe
 pip install -r requirements.txt
 ```
 
+Make sure to edit the `walkthedinosaur/settings.py` file to send email:
+
+```
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
+EMAIL_HOST = ''
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your email here'
+EMAIL_HOST_PASSWORD = 'your password here'
+```
+
+
 Then, create the relevant tables and start the Django server:
 
 ```
