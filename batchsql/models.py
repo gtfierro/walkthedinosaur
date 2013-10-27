@@ -126,21 +126,6 @@ class TestQuery(models.Model):
         query += ";"
         return query
 
-    def getLocFilter(self, prefix, table, column):
-        if (haveLoc[prefix] == 3):
-            city = locCities[prefix]
-            state = locStates[prefix]
-            country = locCountries[prefix]
-            filterString = "(location.state like " + state + "%) AND (location.city like " + city + "%) AND (location.country like " + country + "%)"
-            if prefix == 'inv':
-                a = 1 # CHANGE THIS!
-            elif prefix == 'ass':
-                a = 1 # CHANGE THIS!
-            else:
-                print "Error! Wrong type of thing being searched for locaiton!"
-        else:
-            return ""
-
     def isDate(self, string):
         prefix = string.split('-')[0]
         suffix = string.split('-')[1]
@@ -158,6 +143,37 @@ class TestQuery(models.Model):
                 return True
         else:
             return False
+
+    def getLocFilter(self, prefix, table, column):
+        if (haveLoc[prefix] == 3):
+            city = locCities[prefix]
+            state = locStates[prefix]
+            country = locCountries[prefix]
+            filters = []
+            if (city):
+                filters.append("(location.city like " + city + "%)")
+            if state:
+                filters.append("(location.state like " + state + "%)")
+            if country:
+                filters.append("(location.country like " + country + "%)")
+            filterString = "("
+            i = 0
+            for f in filters:
+                if i != 0:
+                    filterString += f
+                else:
+                    filterString += " AND " + f
+                i += 1
+            if prefix == 'inv':
+                a = 1 # CHANGE THIS!
+            elif prefix == 'ass':
+                a = 1 # CHANGE THIS!
+            else:
+                print "Error! Wrong type of thing being searched for locaiton!"
+            filterstring += ")"
+            return filterString
+        else:
+            return ""
 
     def getDateFilter(self, prefix, table, column):
         if (haveDate[prefix] == 6):
