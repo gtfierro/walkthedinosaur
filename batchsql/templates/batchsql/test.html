@@ -1,0 +1,149 @@
+{% extends "batchsql/base.html" %}
+{% block content %}
+<style>
+#div {margin:20px; padding:20px;}
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css" />
+  <script>
+  $(function() {
+    $( "#from" ).datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onClose: function( selectedDate ) {
+        $( "#to" ).datepicker( "option", "minDate", selectedDate );
+      }
+    });
+    $( "#to" ).datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      onClose: function( selectedDate ) {
+        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
+      }
+    });
+  });
+  </script>
+  <script>
+  $(function() {
+    $( "#datepicker" ).datepicker();
+  });
+  </script>
+<div id="content">
+    <h2>Primary Information</h2>
+    <form class="pri-form" action="submit-test" method="post">
+    {% csrf_token %}
+    <p><input type="text" name="patent-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
+    <p><input type="text" name="ID" id="pri-id" class="form-control" placeholder="Patent ID"></p>
+    <!--
+    <p>Date:
+        <label for="from">From</label>
+        <input type="text" id="from" name="from" />
+        <label for="to">To</label>
+        <input type="text" id="to" name="to" />
+    </p>
+    -->
+    <p>Date (From):
+      <select name="pri-year" id="pri-year-from">
+      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      </select>
+      <select name="pri-month" id="pri-month-from">
+      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      </select>
+      <select name="pri-day" id="pri-day-from">
+      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      </select>
+    </p>
+    <p>Date (To):
+      <select name="pri-year" id="pri-year-to">
+      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      </select>
+      <select name="pri-month" id="pri-month-to">
+      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      </select>
+      <select name="pri-day" id="pri-day-to">
+      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      </select>
+    </p>
+    <input type="text" name="patent-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
+    <br />
+    <h2>Inventor Information</h2>
+    <p><input type="text" name="inventor-name" id="inv-name" class="form-control" placeholder="Name of the Inventor (First, Last)"></p>
+    <p><input type="text" name="inventor-nationality" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
+    </p>
+    <p>Location of the Inventor:</p>
+    <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
+    <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
+    <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
+    <h2>Assignee Information</h2></p>
+    <p><input type="text" name="ass-type" id="ass-type" class="form-control" placeholder="Type of Assignee"></p>
+    <p><input type="text" name="ass-name" id="ass-name" class="form-control" placeholder="Name of Assignee (First, Last)"></p>
+    <p><input type="text" name="ass-org" id="ass-org" class="form-control" placeholder="Organization"></p>
+    <p><input type="text" name="ass-nat" id="ass-nat" class="form-control" placeholder="Assignee's Nationality"></p>
+    <p>Location of Assignee:</p>
+    <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
+    <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's State"></p>
+    <p><input type="text" name="ass-country" id="ass-Country" class="form-control" placeholder="Assignee's Country"></p>
+    <h2>Lawyer Information</h2>
+    <p><input type="text" name="law-name" id="law-name" class="form-control" placeholder="Name of the Lawyer (First, Last)"></p>
+    <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization">
+    <p>
+    <input type="text" name="Law-country" id="Law-Country" class="form-control" placeholder="Lawyer's Country"></p>
+    <h2>Claims Information</h2>
+    <p><input type="text" name="cl-id" id="cl-id" class="form-control" placeholder="ID of the Patent Making the Claims"></p>
+    <p><input type="text" name="cl-text" id="cl-text" class="form-control" placeholder="Part of Claim's Text"></p>
+    <p><input type="text" name="cl-seq-d" id="cl-seq-d" class="form-control" placeholder="Sequence Number of claim this is dependent on."></p>
+    <p><input type="text" name="cl-seq" id="cl-seq" class="form-control" placeholder="What number this claim is listed as."></p>
+    <h2>Patent Citation Information</h2>
+    <p><input type="text" name="cit-id-pa" id="cit-id-pa" class="form-control" placeholder="Patent ID of the Patent that Cites this record"></p>
+    <p><input type="text" name="cit-id" id="cit-id" class="form-control" placeholder="Document Number for the Cited Record"></p>
+    <p>Date (From):
+      <select name="cit-year" id="cit-year-from">
+      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      </select>
+      <select name="cit-month" id="cit-month-from">
+      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      </select>
+      <select name="cit-day" id="cit-day-from">
+      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      </select>
+    </p>
+    <p>Date (To):
+      <select name="cit-year" id="cit-year-to">
+      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      </select>
+      <select name="cit-month" id="cit-month-to">
+      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      </select>
+      <select name="cit-day" id="cit-day-to">
+      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      </select>
+    </p>
+    <p><input type="text" name="cit-seq" id="cit-seq" class="form-control" placeholder="Order in which this citation is cited by patent"></p>
+    <p><input type="text" name="cit-country" id="cit-Country" class="form-control" placeholder="Country"></p>
+    <div class="row">
+        <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" style="width: 500px">
+        </div>
+        <div class="form-group">
+            <label for="dataformat-selector">Data Format</label>
+            <div id="dataformat-selector" class="btn-group">
+                <button type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
+                <button type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
+                <button type="button" class="btn btn-default" data-format="SQL">SQLite</button>
+            </div>
+        </div>
+        <input id="dataformat" name="dataformat" type="hidden" value="CSV"></input>
+    </div>
+    <br />
+    <input class="btn btn-primary" type="submit" value="Submit Job" />
+    <br />
+    <br />
+    </form>
+    
+</div>
+{% endblock content %}
