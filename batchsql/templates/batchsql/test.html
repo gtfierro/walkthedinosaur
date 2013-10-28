@@ -46,26 +46,26 @@
         <input type="text" id="to" name="to" />
     </p>
     -->
-    <p>Date (From):
+    <p>Date (From: YYYY-MM-DD):
       <select name="pri-year-from" id="pri-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="pri-month-from" id="pri-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="pri-day-from" id="pri-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
-    <p>Date (To):
+    <p>Date (To: YYYY-MM-DD):
       <select name="pri-year-to" id="pri-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="pri-month-to" id="pri-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="pri-day-to" id="pri-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
     <input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
@@ -103,26 +103,26 @@
     <h2>Patent Citation Information</h2>
     <p><input type="text" name="cit-id-pa" id="cit-id-pa" class="form-control" placeholder="Patent ID of the Patent that Cites this record"></p>
     <p><input type="text" name="cit-id" id="cit-id" class="form-control" placeholder="Document Number for the Cited Record"></p>
-    <p>Date (From):
+    <p>Date (From: YYYY-MM-DD):
       <select name="cit-year-from" id="cit-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="cit-month-from" id="cit-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="cit-day-from" id="cit-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
-    <p>Date (To):
+    <p>Date (To: YYYY-MM-DD):
       <select name="cit-year-to" id="cit-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == 1980 %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="cit-month-to" id="cit-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="cit-day-to" id="cit-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == 1 %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
     <p><input type="text" name="cit-seq" id="cit-seq" class="form-control" placeholder="Order in which this citation is cited by patent"></p>

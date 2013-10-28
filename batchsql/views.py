@@ -10,6 +10,10 @@ patent_types = connection.patent_types
 years = [i for i in range (1980, date.today().year + 1)]
 months = [i for i in range (1,13)]
 days = [i for i in range (1,32)]
+years.insert(1, '')
+months.insert(1, '')
+days.insert(1, '')
+
 
 def index(request):
     number_of_queries = len(QueuedJob.objects.all())

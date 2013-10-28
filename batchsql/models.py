@@ -158,7 +158,10 @@ class TestQuery(models.Model):
             return False
 
     def getComparator(self, key):
-        return ' LIKE ' # CHANGE THIS!
+        numbers = ['pri-id', 'cl-id', 'cl-seq-d', 'cl-seq', 'cit-seq']
+        if key in numbers:
+            return ' == '
+        return ' LIKE '
 
     def getLocFilter(self, prefix, table, column):
         if (self.haveLoc[prefix] >= 1):
@@ -167,11 +170,11 @@ class TestQuery(models.Model):
             country = self.locCountries[prefix]
             filters = []
             if (city):
-                filters.append("(location.city LIKE " + city + "%)")
+                filters.append("(location.city LIKE '%" + city + "%')")
             if state:
-                filters.append("(location.state LIKE " + state + "%)")
+                filters.append("(location.state LIKE '%" + state + "%')")
             if country:
-                filters.append("(location.country LIKE " + country + "%)")
+                filters.append("(location.country LIKE '%" + country + "%')")
             filterString = "("
             i = 0
             for f in filters:
@@ -270,5 +273,5 @@ class TestQuery(models.Model):
                     print "Error, case for col=", key, " not handled!"
                 else:
                     comparator = self.getComparator(key)
-                    self.colsFilters.append("("+TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key]+comparator+pv+")")
-                
+                    self.colsFilters.append("("+TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key]+comparator+"'%"+pv+"%'"+")")
+
