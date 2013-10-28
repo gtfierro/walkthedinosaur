@@ -260,11 +260,11 @@ class TestQuery(models.Model):
                 else:
                     self.haveLoc[prefix] += 1
                     if suffix == 'city':
-                        locCities[prefix] = pv
+                        self.locCities[prefix] = pv
                     elif suffix == 'state':
-                        locStates[prefix] = pv
+                        self.locStates[prefix] = pv
                     elif suffix == 'country':
-                        locCountries[prefix] = pv
+                        self.locCountries[prefix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " location."
                     self.colsFilters.append(getLocFilter(prefix, TABLEFORPOSTVAR[key], COLUMNFORPOSTVAR[key]))
