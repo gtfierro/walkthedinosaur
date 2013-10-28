@@ -12,7 +12,14 @@ def get_config(filename):
     cfg.read(filename)
     db = cfg.get('global', 'database')
     dbtype = cfg.get('global', 'type')
+    host = cfg.get('global', 'host')
+    user = cfg.get('global', 'user')
+    password = cfg.get('global', 'password')
     return {'db': db,
+            'type': type,
+            'user': user,
+            'pass': password,
+            'host': host,
             'type': dbtype}
 
 if __name__ == '__main__':

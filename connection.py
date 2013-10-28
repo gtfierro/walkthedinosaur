@@ -13,8 +13,11 @@ def get_engine(configfile='config.ini'):
     connections to the database
     """
     options = config.get_config(configfile)
+    print options
     if options['type'] == 'sqlite':
         engine = create_engine('sqlite:///{db}'.format(**options), echo=True)
+    elif options['type'] == 'mysql':
+        engine = create_engine('mysql+mysqldb://{user}:{pass}@{host}/{db}?charset=utf8'.format(**options), echo=True)
     return engine
 
 engine = get_engine()
