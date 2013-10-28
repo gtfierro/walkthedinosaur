@@ -87,5 +87,5 @@ while True:
         update_job_listing(job, filename)
         print 'Finished'
     else:
-        print 'Could not find job. Retrying in 30...'
-        time.sleep(30)
+        print 'Could not find job. Retrying in 5...'
+        time.sleep(5)
