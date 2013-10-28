@@ -17,12 +17,21 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'jobs.db',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
+        # The following settings are not used with sqlite3: USPTO_2005-2013_data
         'USER': '',
         'PASSWORD': '',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
-    }
+    },
+    'patent': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'USPTO_2005-2013_data.sqlite3',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3: USPTO_2005-2013_data
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
+    },
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -159,3 +168,10 @@ LOGGING = {
         },
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'patentinterface@gmail.com'
+EMAIL_HOST_PASSWORD = 'patent123'
