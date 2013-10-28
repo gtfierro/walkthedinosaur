@@ -163,13 +163,13 @@ class TestQuery(models.Model):
             return ' == '
         return ' LIKE '
 
-    def getLocFilter(self, prefix, table, column):
+    def getLocFilter(self, prefix):
         if (self.haveLoc[prefix] >= 1):
             city = self.locCities[prefix]
             state = self.locStates[prefix]
             country = self.locCountries[prefix]
             filters = []
-            if (city):
+            if city:
                 filters.append("(location.city LIKE '%" + city + "%')")
             if state:
                 filters.append("(location.state LIKE '%" + state + "%')")
@@ -178,18 +178,19 @@ class TestQuery(models.Model):
             filterString = "("
             i = 0
             for f in filters:
-                if i != 0:
+                if i == 0:
                     filterString += f
                 else:
                     filterString += " AND " + f
                 i += 1
+            i = 0
             if prefix == 'inv':
-                filterString += ", location.id == location_inventor.id"
+                filterString += " AND location.id == location_inventor.location_id"
             elif prefix == 'ass':
-                filterString += ", location.id == location_assignee.id"
+                filterString += " AND location.id == location_assignee.location_id"
             else:
                 print "Error! Wrong type of thing being searched for locaiton!"
-            filterstring += ")"
+            filterString += ")"
             return filterString
         else:
             return ""
@@ -237,7 +238,11 @@ class TestQuery(models.Model):
                     self.tablesToSearch.append(TABLEFORPOSTVAR[key])
 
     def updateColsFilters(self):
-        for key in self.postVar.keys():
+        keys = self.postVar.keys()
+        keys.sort()
+        for key in keys:
+            print key
+        for key in keys:
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
@@ -267,7 +272,7 @@ class TestQuery(models.Model):
                         self.locCountries[prefix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " location."
-                    self.colsFilters.append(getLocFilter(prefix, TABLEFORPOSTVAR[key], COLUMNFORPOSTVAR[key]))
+                    self.colsFilters.append(self.getLocFilter(prefix))
             else:
                 if not COLUMNFORPOSTVAR[key]:
                     print "Error, case for col=", key, " not handled!"

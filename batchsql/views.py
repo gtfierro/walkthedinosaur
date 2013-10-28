@@ -6,13 +6,12 @@ from batchsql.models import QueuedJob, CompletedJob, TestQuery
 import connection
 from datetime import date
 tables = connection.tables
-patent_types = connection.patent_types
 years = [i for i in range (1980, date.today().year + 1)]
 months = [i for i in range (1,13)]
 days = [i for i in range (1,32)]
-years.insert(1, '')
-months.insert(1, '')
-days.insert(1, '')
+years.insert(0, '')
+months.insert(0, '')
+days.insert(0, '')
 
 
 def index(request):
@@ -38,7 +37,7 @@ def submit_query(request):
     return HttpResponseRedirect('index')
 
 def test(request):
-    context = {'tables': tables, 'patent_types': patent_types, 'months':months, 'years':years, 'days':days}
+    context = {'tables': tables, 'months':months, 'years':years, 'days':days}
     return render(request, 'batchsql/test.html', context)
 
 def submit_test(request):
