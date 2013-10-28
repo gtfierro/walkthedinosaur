@@ -11,16 +11,22 @@ FORMAT_CHOICES = (
     (SQL, 'Sqlite file')
 )
 
-TABLEFORPOSTVAR = {'pri-title':'patent', 'pri-id':'patent', 'pri-year':'patent', 'pri-month':'patent', 'pri-day':'patent',
-                   'pri-city':'location', 'pri-state':'location', 'pri-country':'location',
-                   'inv-name':'inventor', 'inv-nat':'inventor',
+TABLEFORPOSTVAR = {'pri-title':'patent', 'pri-id':'patent', 'pri-year-from':'patent', 'pri-month-from':'patent', 'pri-day-from':'patent', 'pri-year-to':'patent', 'pri-month-to':'patent', 'pri-day-to':'patent', 'pri-country':'patent',
+                   'inv-name-first':'inventor', 'inv-name-last':'inventor', 'inv-nat':'inventor',
                    'inv-city':'location', 'inv-state':'location', 'inv-country':'location',
-                   'ass-type':'assignee', 'ass-name':'assignee', 'ass-nat':'assignee', 'ass-org':'assignee', 'ass-nat':'assignee',
+                   'ass-type':'assignee', 'ass-name-first':'assignee', 'ass-name-last':'assignee', 'ass-nat':'assignee', 'ass-org':'assignee',
                    'ass-city':'location', 'ass-state':'location', 'ass-country':'location',
-                   'law-name':'lawyer', 'law-org':'lawyer', 'law-country':'lawyer',
+                   'law-name-first':'lawyer', 'law-name-last':'lawyer', 'law-org':'lawyer', 'law-country':'lawyer',
                    'cl-id':'claim', 'cl-text':'claim', 'cl-seq-d':'claim', 'cl-seq':'claim',
-                   'cit-id':'uspatentcitation', 'cit-id-pa':'uspatentcitation', 'cit-year':'uspatentcitation', 'cit-day':'uspatentcitation', 'cit-month':'uspatentcitation', 'cit-country':'uspatentcitation', 'cit-seq':'uspatentcitation'}
-COLUMNFORPOSTVAR = {}
+                   'cit-id':'uspatentcitation', 'cit-id-pa':'uspatentcitation', 'cit-year-from':'uspatentcitation', 'cit-year-to':'uspatentcitation', 'cit-day-from':'uspatentcitation', 'cit-month-from':'uspatentcitation', 'cit-day-to':'uspatentcitation', 'cit-month-to':'uspatentcitation', 'cit-country':'uspatentcitation', 'cit-seq':'uspatentcitation'}
+COLUMNFORPOSTVAR = {'pri-title':'title', 'pri-id':'id', 'pri-year-from':'date', 'pri-month-from':'date', 'pri-day-from':'date', 'pri-year-to':'date', 'pri-month-to':'date', 'pri-day-to':'date', 'pri-country':'country',
+                   'inv-name-first':'name_first', 'inv-name-last':'name_last', 'inv-nat':'nationality',
+                   'inv-city':'city', 'inv-state':'state', 'inv-country':'country',
+                   'ass-type':'type', 'ass-name-first':'name_first', 'ass-name-last':'name_last', 'ass-nat':'nationality', 'ass-org':'organization',
+                   'ass-city':'city', 'ass-state':'state', 'ass-country':'country',
+                   'law-name-first':'name_first', 'law-name-last':'name_last', 'law-org':'organization', 'law-country':'country',
+                   'cl-id':'patent_id', 'cl-text':'text', 'cl-seq-d':'dependent', 'cl-seq':'sequence',
+                   'cit-id':'citation_id', 'cit-id-pa':'patent_id', 'cit-year-from':'date', 'cit-day-from':'date', 'cit-month-from':'date', 'cit-year-to':'date', 'cit-day-to':'date', 'cit-month-to':'date', 'cit-country':'country', 'cit-seq':'sequence'}
 
 class QueuedJob(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
@@ -63,25 +69,25 @@ class CompletedJob(models.Model):
         return job
 
 class TestQuery(models.Model):
-    def __init__(postvar):
+    def __init__(self, postvar):
         self.colsToSearch = []
         self.tablesToSearch = []
         self.colsFilters = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
         self.haveDate = {'pri':0, 'cit':0}
-        self.locCities = {'inv':"", 'ass':""}
-        self.locStates = {'inv':"", 'ass':""}
-        self.locCountries = {'inv':"", 'ass':""}
+        self.locCities = {'inv':'', 'ass':''}
+        self.locStates = {'inv':'', 'ass':''}
+        self.locCountries = {'inv':'', 'ass':''}
         self.priDay = {'from':'', 'to':''}
         self.citDay = {'from':'', 'to':''}
         self.priMonth = {'from':'', 'to':''}
         self.citMonth = {'from':'', 'to':''}
         self.priYear = {'from':'', 'to':''}
         self.citYear = {'from':'', 'to':''}
-        self.dateDays = {'pri':priDay, 'cit':citDay}
-        self.dateMonths = {'pri':priMonth, 'cit':citMonth}
-        self.dateYears = {'pri':priYear, 'cit':citYear}
+        self.dateDays = {'pri':self.priDay, 'cit':self.citDay}
+        self.dateMonths = {'pri':self.priMonth, 'cit':self.citMonth}
+        self.dateYears = {'pri':self.priYear, 'cit':self.citYear}
 
     def getQueryString(self):
         self.updateTablesToSearch()
@@ -91,37 +97,44 @@ class TestQuery(models.Model):
         if len(self.colsToSearch) == 0:
             query += "* "
         else:
+            cts = list(set(self.colsToSearch))
+            if ('' in cts): cts.remove('')
             i = 0
-            for col in self.colsToSearch:
-                if (col != '') or (self.tablesToSearch[i] != '') or (self.colsFilters[i] != ''):
-                    if i < len(colsToSearch):
-                        query += col + ", "
-                    else:
-                        query += col + " "
+            for col in cts:
+                if i < len(cts) - 1:
+                    query += col + ", "
+                else:
+                    query += col + " "
                 i += 1
         query += "FROM "
         if len(self.tablesToSearch) == 0:
             query += " "
         else:
+            tts = list(set(self.tablesToSearch))
+            if ('' in tts): tts.remove('')
             i = 0
-            for table in self.tablesToSearch:
-                if (colsToSearch[i] != '') or (table != '') or (self.colsFilters[i] != ''):
-                    if i < len(tablesToSearch):
-                        query += table + ", "
-                    else:
-                        query += table + " "
+            for table in tts:
+                if i < len(tts) - 1:
+                    query += table + ", "
+                else:
+                    query += table + " "
                 i += 1
+        if self.haveLoc['inv'] or self.haveLoc['ass']:
+            query += ", location_inventor, location_assignee "
         query += "WHERE "
         if len(self.colsFilters) == 0:
             query += " "
         else:
+            cf = list(set(self.colsFilters))
+            if ('' in cf): cf.remove('')
             i = 0
-            for f in self.colsFilters:
-                if (colsToSearch[i] != '') or (self.tablesToSearch[i] != '') or (f != ''):
-                    if i < len(colsFilters):
-                        query += f + ", "
-                    else:
-                        query += f + " "
+            for f in cf:
+                if i < len(cf) - 1:
+                    print "query = ", query
+                    print "f = ", f
+                    query += f + " AND "
+                else:
+                    query += f + " "
                 i += 1
         query += ";"
         return query
@@ -144,18 +157,21 @@ class TestQuery(models.Model):
         else:
             return False
 
+    def getComparator(self, key):
+        return ' LIKE ' # CHANGE THIS!
+
     def getLocFilter(self, prefix, table, column):
-        if (haveLoc[prefix] == 3):
-            city = locCities[prefix]
-            state = locStates[prefix]
-            country = locCountries[prefix]
+        if (self.haveLoc[prefix] >= 1):
+            city = self.locCities[prefix]
+            state = self.locStates[prefix]
+            country = self.locCountries[prefix]
             filters = []
             if (city):
-                filters.append("(location.city like " + city + "%)")
+                filters.append("(location.city LIKE " + city + "%)")
             if state:
-                filters.append("(location.state like " + state + "%)")
+                filters.append("(location.state LIKE " + state + "%)")
             if country:
-                filters.append("(location.country like " + country + "%)")
+                filters.append("(location.country LIKE " + country + "%)")
             filterString = "("
             i = 0
             for f in filters:
@@ -165,9 +181,9 @@ class TestQuery(models.Model):
                     filterString += " AND " + f
                 i += 1
             if prefix == 'inv':
-                a = 1 # CHANGE THIS!
+                filterString += ", location.id == location_inventor.id"
             elif prefix == 'ass':
-                a = 1 # CHANGE THIS!
+                filterString += ", location.id == location_assignee.id"
             else:
                 print "Error! Wrong type of thing being searched for locaiton!"
             filterstring += ")"
@@ -176,78 +192,83 @@ class TestQuery(models.Model):
             return ""
 
     def getDateFilter(self, prefix, table, column):
-        if (haveDate[prefix] == 6):
-            fromDay = dateDays[prefix]['from']
-            fromMonth = dateMonths[prefix]['from']
-            fromYear = dateYears[prefix]['from']
-            toDay = dateDays[prefix]['to']
-            toMonth = dateMonths[prefix]['to']
-            toYear = dateYears[prefix]['to']
-            fromDateString = fromYear + "-" + fromMonth + "-" + fromDay
-            toDateString = toYear + "-" + toMonth + "-" + toDay
-            return "(date(",table,".",column,") BETWEEN date(",fromDateString,") AND date(", toDateString,"))"
-        elif haveDate[prefix] > 6:
-            print "Error, counted date of ", prefix, " too many times!"
+        if (self.haveDate[prefix] == 6):
+            fromDay = self.dateDays[prefix]['from']
+            fromMonth = self.dateMonths[prefix]['from']
+            fromYear = self.dateYears[prefix]['from']
+            toDay = self.dateDays[prefix]['to']
+            toMonth = self.dateMonths[prefix]['to']
+            toYear = self.dateYears[prefix]['to']
+            fromDateString = fromYear + '-' + fromMonth + '-' + fromDay
+            toDateString = toYear + '-' + toMonth + '-' + toDay
+            res = '(date('+table+'.'+column+') BETWEEN date('+fromDateString+') AND date('+toDateString+'))'
+            return res
+        elif self.haveDate[prefix] > 6:
+            print 'Error, counted date of ', prefix, ' too many times!'
         else:
-            return ""
+            return ''
 
 
     def updateColsToSearch(self):
-        i = 0
         for key in self.postVar.keys():
-            if (self.postVar[key] == '') or (self.postVar[key] == 'email') or (self.postVar[key] == 'dataformat'):
-                colsToSearch.append('')
+            key = key.encode('ascii')
+            pv = self.postVar[key].encode('ascii')
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+                self.colsToSearch.append('')
             else:
                 if not COLUMNFORPOSTVAR[key]:
                     print "Error, case for col for ", key, " not handled!"
                 else:
-                    colsToSearch.append(tablesToSearch[i]+"."+COLUMNFORPOSTVAR[key])
-            i += 1
+                    self.colsToSearch.append(TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key])
 
     def updateTablesToSearch(self):
         for key in self.postVar.keys():
-            if (self.postVar[key] == '') or (self.postVar[key] == 'email') or (self.postVar[key] == 'dataformat'):
-                tablesToSearch.append('')
+            key = key.encode('ascii')
+            pv = self.postVar[key].encode('ascii')
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+                self.tablesToSearch.append('')
             else:
                 if not COLUMNFORPOSTVAR[key]:
                     print "Error, case for table for ", key, " not handled!"
                 else:
-                    tablesToSearch.append(TABLEFORPOSTVAR[key])
+                    self.tablesToSearch.append(TABLEFORPOSTVAR[key])
 
     def updateColsFilters(self):
-        i = 0
         for key in self.postVar.keys():
-            if (self.postVar[key] == '') or (self.postVar[key] == 'email') or (self.postVar[key] == 'dataformat'):
-                colsFilters.append('')
-            elif self.isDate(self.postVar[key]) or self.isLoc(self.postVar[key]):
-                prefix = self.postVar[key].split('-')[0]
-                suffix = self.postVar[key].split('-')[1]
-                if self.isDate(self.postVar[key]):
-                    postfix = self.postVar[key].split('-')[2]
-                    haveDate[prefix] += 1
+            key = key.encode('ascii')
+            pv = self.postVar[key].encode('ascii')
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+                self.colsFilters.append('')
+            elif self.isDate(key) or self.isLoc(key):
+                prefix = key.split('-')[0]
+                suffix = key.split('-')[1]
+                if self.isDate(key):
+                    postfix = key.split('-')[2]
+                    self.haveDate[prefix] += 1
                     if suffix == 'month':
-                        dateMonths[prefix][postfix] = self.postVar[key]
+                        self.dateMonths[prefix][postfix] = pv
                     elif suffix == 'day':
-                        dateDays[prefix][postfix] = self.postVar[key]
+                        self.dateDays[prefix][postfix] = pv
                     elif suffix == 'year':
-                        dateDays[key][postfix] = self.postVar[key]
+                        self.dateYears[prefix][postfix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " date."
-                    colsFilters.append(getDateFilter(self.postVar[key].split('-')[0])) 
+                    self.colsFilters.append(self.getDateFilter(prefix, TABLEFORPOSTVAR[key], COLUMNFORPOSTVAR[key])) 
                 else:
-                    haveLoc[prefix] += 1
+                    self.haveLoc[prefix] += 1
                     if suffix == 'city':
-                        locCities[prefix] = self.postVar[key]
+                        locCities[prefix] = pv
                     elif suffix == 'state':
-                        locStates[prefix] = self.postVar[key]
+                        locStates[prefix] = pv
                     elif suffix == 'country':
-                        locCountries[prefix] = self.postVar[key]
+                        locCountries[prefix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " location."
-                    colsFilters.append(getLocFilter(self.postVar[key].split('-')[0]))
+                    self.colsFilters.append(getLocFilter(prefix, TABLEFORPOSTVAR[key], COLUMNFORPOSTVAR[key]))
             else:
                 if not COLUMNFORPOSTVAR[key]:
                     print "Error, case for col=", key, " not handled!"
                 else:
-                    colsFilters.append(tablesToSearch[i]+"."+colsToSearch[i]+"="+self.postVar[key])
+                    comparator = self.getComparator(key)
+                    self.colsFilters.append("("+TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key]+comparator+pv+")")
                 
