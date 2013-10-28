@@ -23,7 +23,7 @@ Make sure to edit the `walkthedinosaur/settings.py` file to send email:
 
 ```
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
-EMAIL_HOST = ''
+EMAIL_HOST = '' # For example, smtp.gmail.com if you are using Gmail. 
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your email here'

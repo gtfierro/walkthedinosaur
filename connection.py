@@ -6,6 +6,8 @@ creating connections to the database
 
 import config
 from sqlalchemy import create_engine, MetaData, Table, inspect
+from sqlalchemy.sql import select
+from sqlalchemy.orm import sessionmaker
 
 def get_engine(configfile='config.ini'):
     """
@@ -27,3 +29,21 @@ info = inspect(engine)
 tables = {} # list of tablenames in database
 for tablename in info.get_table_names():
     tables[tablename] = Table(tablename, metadata, autoload=True).columns
+
+"""
+Session = sessionmaker(bind=engine)
+session = Session()
+patent_type_query = "SELECT DISTINCT type FROM patent;"
+result = session.execute(patent_type_query)
+for row in result:
+	patent_types.append(row['type'])
+if len(patent_types) == 0:
+	print "No results found"
+
+
+patent_table = Table('patent', metadata, autoLoad=True)
+for c in patent_table.columns:
+	if c.name == "type":
+		for entry in c:
+			patent_types.append(entry.name)
+"""
