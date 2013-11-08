@@ -11,22 +11,61 @@ FORMAT_CHOICES = (
     (SQL, 'Sqlite file')
 )
 
-TABLEFORPOSTVAR = {'pri-title':'patent', 'pri-id':'patent', 'pri-year-from':'patent', 'pri-month-from':'patent', 'pri-day-from':'patent', 'pri-year-to':'patent', 'pri-month-to':'patent', 'pri-day-to':'patent', 'pri-country':'patent',
-                   'inv-name-first':'inventor', 'inv-name-last':'inventor', 'inv-nat':'inventor',
-                   'inv-city':'location', 'inv-state':'location', 'inv-country':'location',
-                   'ass-type':'assignee', 'ass-name-first':'assignee', 'ass-name-last':'assignee', 'ass-nat':'assignee', 'ass-org':'assignee',
-                   'ass-city':'location', 'ass-state':'location', 'ass-country':'location',
-                   'law-name-first':'lawyer', 'law-name-last':'lawyer', 'law-org':'lawyer', 'law-country':'lawyer',
-                   'cl-id':'claim', 'cl-text':'claim', 'cl-seq-d':'claim', 'cl-seq':'claim',
-                   'cit-id':'uspatentcitation', 'cit-id-pa':'uspatentcitation', 'cit-year-from':'uspatentcitation', 'cit-year-to':'uspatentcitation', 'cit-day-from':'uspatentcitation', 'cit-month-from':'uspatentcitation', 'cit-day-to':'uspatentcitation', 'cit-month-to':'uspatentcitation', 'cit-country':'uspatentcitation', 'cit-seq':'uspatentcitation'}
-COLUMNFORPOSTVAR = {'pri-title':'title', 'pri-id':'id', 'pri-year-from':'date', 'pri-month-from':'date', 'pri-day-from':'date', 'pri-year-to':'date', 'pri-month-to':'date', 'pri-day-to':'date', 'pri-country':'country',
-                   'inv-name-first':'name_first', 'inv-name-last':'name_last', 'inv-nat':'nationality',
-                   'inv-city':'city', 'inv-state':'state', 'inv-country':'country',
-                   'ass-type':'type', 'ass-name-first':'name_first', 'ass-name-last':'name_last', 'ass-nat':'nationality', 'ass-org':'organization',
-                   'ass-city':'city', 'ass-state':'state', 'ass-country':'country',
-                   'law-name-first':'name_first', 'law-name-last':'name_last', 'law-org':'organization', 'law-country':'country',
-                   'cl-id':'patent_id', 'cl-text':'text', 'cl-seq-d':'dependent', 'cl-seq':'sequence',
-                   'cit-id':'citation_id', 'cit-id-pa':'patent_id', 'cit-year-from':'date', 'cit-day-from':'date', 'cit-month-from':'date', 'cit-year-to':'date', 'cit-day-to':'date', 'cit-month-to':'date', 'cit-country':'country', 'cit-seq':'sequence'}
+POSTVARMAPS = {'pri-title':('patent', 'title'), 
+               'pri-id':('patent','id'),
+               'pri-date':('patent', 'date'), 
+               'pri-year-from':('patent','date'), 
+               'pri-month-from':('patent','date'), 
+               'pri-day-from':('patent','date'), 
+               'pri-year-to':('patent','date'), 
+               'pri-month-to':('patent','date'), 
+               'pri-day-to':('patent','date'), 
+               'pri-country':('patent','country'),
+               'inv-name-first':('rawinventor', 'name_first'), 
+               'inv-name-last':('rawinventor', 'name_last'), 
+               'inv-nat':('rawinventor', 'nationality'),
+               'inv-loc':('rawlocation', 'location_id'),
+               'inv-city':('rawlocation', 'city'), 
+               'inv-state':('rawlocation', 'state'), 
+               'inv-country':('rawlocation', 'country'),
+               'ass-type':('rawassignee','type'), 
+               'ass-name-first':('rawassignee','name_first'), 
+               'ass-name-last':('rawassignee','name_last'), 
+               'ass-nat':('rawassignee','nationality'), 
+               'ass-org':('rawassignee','organization'),
+               'ass-loc':('rawlocation','location_id'),
+               'ass-city':('rawlocation','city'), 
+               'ass-state':('rawlocation','state'), 
+               'ass-country':('rawlocation','country'),
+               'law-name-first':('rawlawyer','name_first'), 
+               'law-name-last':('rawlawyer','name_last'), 
+               'law-org':('rawlawyer','organization'), 
+               'law-country':('rawlawyer','country'),
+               'cl-id':('claim','patent_id'), 
+               'cl-text':('claim','text'), 
+               'cl-seq-d':('claim','dependent'), 
+               'cl-seq':('claim','sequence'),
+               'cit-id':('uspatentcitation','citation_id'), 
+               'cit-id-pa':('uspatentcitation','patent_id'),
+               'cit-date':('uspatentcitation','date'), 
+               'cit-year-from':('uspatentcitation','date'), 
+               'cit-day-from':('uspatentcitation','date'), 
+               'cit-month-from':('uspatentcitation','date'), 
+               'cit-year-to':('uspatentcitation','date'), 
+               'cit-day-to':('uspatentcitation','date'), 
+               'cit-month-to':('uspatentcitation','date'), 
+               'cit-country':('uspatentcitation','country'), 
+               'cit-seq':('uspatentcitation','sequence')
+              }
+
+JOINS = {('patent', 'rawinventor'):('id','patent_id'),
+         ('patent', 'rawassignee'):('id','patent_id'),
+         ('patent', 'claim'):('id','patent_id'),
+         ('patent', 'uspatentcitation'):('id','patent_id'),
+         ('rawassignee', 'rawlocation'):('rawlocation_id','location_id'),
+         ('rawinventor', 'rawlocation'):('rawlocation_id','location_id')
+        }
+
 
 class QueuedJob(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
@@ -73,6 +112,8 @@ class TestQuery(models.Model):
         self.colsToSearch = []
         self.tablesToSearch = []
         self.colsFilters = []
+        self.fieldTables = []
+        self.filterTables = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
         self.haveDate = {'pri':0, 'cit':0}
@@ -93,6 +134,7 @@ class TestQuery(models.Model):
         self.updateTablesToSearch()
         self.updateColsToSearch()
         self.updateColsFilters()
+        self.updateJoins()
         query = "SELECT "
         if len(self.colsToSearch) == 0:
             query += "* "
@@ -119,8 +161,6 @@ class TestQuery(models.Model):
                 else:
                     query += table + " "
                 i += 1
-        if self.haveLoc['inv'] or self.haveLoc['ass']:
-            query += ", location_inventor, location_assignee "
         query += "WHERE "
         if len(self.colsFilters) == 0:
             query += " "
@@ -138,6 +178,10 @@ class TestQuery(models.Model):
                 i += 1
         query += ";"
         return query
+
+    def isField(self, string):
+        prefix = string.split('-')[0]
+        return prefix == 'f'
 
     def isDate(self, string):
         prefix = string.split('-')[0]
@@ -160,7 +204,7 @@ class TestQuery(models.Model):
     def getComparator(self, key):
         numbers = ['pri-id', 'cl-id', 'cl-seq-d', 'cl-seq', 'cit-seq']
         if key in numbers:
-            return ' == '
+            return ' = '
         return ' LIKE '
 
     def getLocFilter(self, prefix):
@@ -170,11 +214,11 @@ class TestQuery(models.Model):
             country = self.locCountries[prefix]
             filters = []
             if city:
-                filters.append("(location.city LIKE '%" + city + "%')")
+                filters.append("(rawlocation.city LIKE '%" + city + "%')")
             if state:
-                filters.append("(location.state LIKE '%" + state + "%')")
+                filters.append("(rawlocation.state LIKE '%" + state + "%')")
             if country:
-                filters.append("(location.country LIKE '%" + country + "%')")
+                filters.append("(rawlocation.country LIKE '%" + country + "%')")
             filterString = "("
             i = 0
             for f in filters:
@@ -183,11 +227,12 @@ class TestQuery(models.Model):
                 else:
                     filterString += " AND " + f
                 i += 1
-            i = 0
             if prefix == 'inv':
-                filterString += " AND location.id == location_inventor.location_id"
+                filterString += " AND rawlocation.location_id = rawinventor.rawlocation_id"
+                self.tablesToSearch.append('rawinventor')
             elif prefix == 'ass':
-                filterString += " AND location.id == location_assignee.location_id"
+                filterString += " AND rawlocation.location_id = rawassignee.rawlocation_id"
+                self.tablesToSearch.append('rawassignee')
             else:
                 print "Error! Wrong type of thing being searched for locaiton!"
             filterString += ")"
@@ -206,6 +251,7 @@ class TestQuery(models.Model):
             fromDateString = fromYear + '-' + fromMonth + '-' + fromDay
             toDateString = toYear + '-' + toMonth + '-' + toDay
             res = '(date('+table+'.'+column+') BETWEEN date('+fromDateString+') AND date('+toDateString+'))'
+            self.filterTables.append(table)
             return res
         elif self.haveDate[prefix] > 6:
             print 'Error, counted date of ', prefix, ' too many times!'
@@ -218,25 +264,30 @@ class TestQuery(models.Model):
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
-                self.colsToSearch.append('')
-            else:
-                if not COLUMNFORPOSTVAR[key]:
-                    print "Error, case for col for ", key, " not handled!"
-                else:
-                    self.colsToSearch.append(TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key])
+                pass
+            elif self.isField(key):
+                parts = key.split('-')
+                parts.remove('f')
+                newKey = '-'.join(parts)
+                val = POSTVARMAPS[newKey]
+                self.colsToSearch.append(val[0]+"."+val[1])
+                self.fieldTables.append(val[0])
 
     def updateTablesToSearch(self):
         for key in self.postVar.keys():
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
-                self.tablesToSearch.append('')
+                pass
             else:
-                if not COLUMNFORPOSTVAR[key]:
-                    print "Error, case for table for ", key, " not handled!"
+                if self.isField(key):
+                    parts = key.split('-')
+                    parts.remove('f')
+                    newKey = '-'.join(parts)
                 else:
-                    self.tablesToSearch.append(TABLEFORPOSTVAR[key])
-
+                    newKey = key
+                self.tablesToSearch.append(POSTVARMAPS[newKey][0])
+                
     def updateColsFilters(self):
         keys = self.postVar.keys()
         keys.sort()
@@ -245,7 +296,7 @@ class TestQuery(models.Model):
         for key in keys:
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
-            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or self.isField(key):
                 self.colsFilters.append('')
             elif self.isDate(key) or self.isLoc(key):
                 prefix = key.split('-')[0]
@@ -261,7 +312,7 @@ class TestQuery(models.Model):
                         self.dateYears[prefix][postfix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " date."
-                    self.colsFilters.append(self.getDateFilter(prefix, TABLEFORPOSTVAR[key], COLUMNFORPOSTVAR[key])) 
+                    self.colsFilters.append(self.getDateFilter(prefix, POSTVARMAPS[key][0], POSTVARMAPS[key][1])) 
                 else:
                     self.haveLoc[prefix] += 1
                     if suffix == 'city':
@@ -274,9 +325,27 @@ class TestQuery(models.Model):
                         print "Error! Invalid input for ", prefix, " location."
                     self.colsFilters.append(self.getLocFilter(prefix))
             else:
-                if not COLUMNFORPOSTVAR[key]:
+                if not POSTVARMAPS[key]:
                     print "Error, case for col=", key, " not handled!"
                 else:
                     comparator = self.getComparator(key)
-                    self.colsFilters.append("("+TABLEFORPOSTVAR[key]+"."+COLUMNFORPOSTVAR[key]+comparator+"'%"+pv+"%'"+")")
+                    val = POSTVARMAPS[key]
+                    self.filterTables.append(val[0])
+                    if comparator == " LIKE ":
+                        self.colsFilters.append("("+val[0]+"."+val[1]+comparator+"'%"+pv+"%'"+")")
+                    else:
+                        self.colsFilters.append("("+val[0]+"."+val[1]+comparator+pv+" )")
 
+    def updateJoins(self):
+        fdt = list(set(self.fieldTables))
+        ftt = list(set(self.filterTables))
+        for t1 in fdt:
+            for t2 in ftt:
+                if (t1,t2) in JOINS.keys():
+                    val = JOINS[(t1,t2)]
+                    self.colsFilters.append("("+val[0]+" = "+val[1]+")")
+        for t1 in ftt:
+            for t2 in fdt:
+                if (t1,t2) in JOINS.keys():
+                    val = JOINS[(t1,t2)]
+                    self.colsFilters.append("("+val[0]+" = "+val[1]+")")

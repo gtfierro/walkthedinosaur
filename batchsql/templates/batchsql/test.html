@@ -7,45 +7,55 @@
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
   <link rel="stylesheet" href="/resources/demos/style.css" />
-  <script>
-  $(function() {
-    $( "#from" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#to" ).datepicker( "option", "minDate", selectedDate );
-      }
-    });
-    $( "#to" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
-      }
-    });
-  });
-  </script>
-  <script>
-  $(function() {
-    $( "#datepicker" ).datepicker();
-  });
-  </script>
 <div id="content">
-    <h2>Primary Information</h2>
     <form class="pri-form" action="submit-test" method="post">
     {% csrf_token %}
+    <p><h2>Search For:</h2></p>
+    <div class="row">
+    <div class="col-md-4">
+      <p>Primary Information</p>
+      <p><input type="checkbox" name="f-pri-title" value="1">Title of Patent</p>
+      <p><input type="checkbox" name="f-pri-id" value="1">Patent ID</p>
+      <p><input type="checkbox" name="f-pri-date" value="1">Date Patent was filed</p>
+      <p><input type="checkbox" name="f-pri-country" value="1">Country of Patent</p>
+      <p>Inventor Information</p>
+      <p><input type="checkbox" name="f-inv-name-first" value="1">First Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-name-last" value="1">Last Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-nat" value="1">Inventor's Nationality</p>
+      <p><input type="checkbox" name="f-inv-loc" value="1">Inventor's Location</p>
+    </div>
+    <div class="col-md-4">
+      <p>Assignee Information</p>
+      <p><input type="checkbox" name="f-ass-name-first" value="1">First Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-name-last" value="1">Last Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-nat" value="1">Assignee's Nationality</p>
+      <p><input type="checkbox" name="f-ass-loc" value="1">Assignee's Location</p>
+      <p><input type="checkbox" name="f-ass-org" value="1">Assignee's organization</p>
+      <p>Lawyer Information</p>
+      <p><input type="checkbox" name="f-law-name-first" value="1">First Name of the Lawyer</p>
+      <p><input type="checkbox" name="f-law-name-last" value="1">Last Name of the Lawyer</p>
+      <p><input type="checkbox" name="f-law-country" value="1">Lawyer's Country</p>
+      <p><input type="checkbox" name="f-law-org" value="1">Lawyer's organization</p>
+    </div>
+    <div class="col-md-4">
+      <p>Claims Information</p>
+      <p><input type="checkbox" name="f-cl-text" value="1">Claim's Text</p>
+      <p><input type="checkbox" name="f-cl-id" value="1">Claim ID</p>
+      <p><input type="checkbox" name="f-cl-seq" value="1">Claim Sequence ID</p>
+      <p><input type="checkbox" name="f-cl-seq-d" value="1">Sequence Number of claim this is dependent on</p>
+      <p>Citation Information</p>
+      <p><input type="checkbox" name="f-cit-id" value="1">Citation ID</p>
+      <p><input type="checkbox" name="f-cit-id-pa" value="1">Citation's Patent ID</p>
+      <p><input type="checkbox" name="f-cit-date" value="1">Date of Citation</p>
+      <p><input type="checkbox" name="f-cl-seq" value="1">Citation Sequence ID</p>
+      <p><input type="checkbox" name="f-cit-country" value="1">Country of citation</p>      
+    </div>
+    </div>
+
+    <h2>Filters:</h2>
+    <h3>Primary Information</h2>
     <p><input type="text" name="pri-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
     <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID"></p>
-    <!--
-    <p>Date:
-        <label for="from">From</label>
-        <input type="text" id="from" name="from" />
-        <label for="to">To</label>
-        <input type="text" id="to" name="to" />
-    </p>
-    -->
     <p>Date (From: YYYY-MM-DD):
       <select name="pri-year-from" id="pri-year-from">
       {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
@@ -70,7 +80,7 @@
     </p>
     <input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
     <br />
-    <h2>Inventor Information</h2>
+    <h3>Inventor Information</h3>
     <p><input type="text" name="inv-name-first" id="inv-name-first" class="form-control" placeholder="First Name of the Inventor" size="64"></p>
     <p><input type="text" name="inv-name-last" id="inv-name-last" class="form-control" placeholder="Last Name of the Inventor" size="64"></p>
     <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
@@ -80,7 +90,6 @@
     <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
     <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
     <h2>Assignee Information</h2></p>
-    <p><input type="text" name="ass-type" id="ass-type" class="form-control" placeholder="Type of Assignee"></p>
     <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
     <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
     <p><input type="text" name="ass-org" id="ass-org" class="form-control" placeholder="Organization"></p>
@@ -89,18 +98,18 @@
     <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
     <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's State"></p>
     <p><input type="text" name="ass-country" id="ass-Country" class="form-control" placeholder="Assignee's Country"></p>
-    <h2>Lawyer Information</h2>
+    <h3>Lawyer Information</h3>
     <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
     <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>
     <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization">
     <p>
     <input type="text" name="law-country" id="law-Country" class="form-control" placeholder="Lawyer's Country"></p>
-    <h2>Claims Information</h2>
+    <h3>Claims Information</h3>
     <p><input type="text" name="cl-id" id="cl-id" class="form-control" placeholder="ID of the Patent Making the Claims"></p>
     <p><input type="text" name="cl-text" id="cl-text" class="form-control" placeholder="Part of Claim's Text"></p>
     <p><input type="text" name="cl-seq-d" id="cl-seq-d" class="form-control" placeholder="Sequence Number of claim this is dependent on."></p>
     <p><input type="text" name="cl-seq" id="cl-seq" class="form-control" placeholder="What number this claim is listed as."></p>
-    <h2>Patent Citation Information</h2>
+    <h3>Patent Citation Information</h3>
     <p><input type="text" name="cit-id-pa" id="cit-id-pa" class="form-control" placeholder="Patent ID of the Patent that Cites this record"></p>
     <p><input type="text" name="cit-id" id="cit-id" class="form-control" placeholder="Document Number for the Cited Record"></p>
     <p>Date (From: YYYY-MM-DD):
