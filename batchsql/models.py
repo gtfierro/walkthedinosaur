@@ -62,8 +62,8 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
          ('patent', 'rawassignee'):('id','patent_id'),
          ('patent', 'claim'):('id','patent_id'),
          ('patent', 'uspatentcitation'):('id','patent_id'),
-         ('rawassignee', 'rawlocation'):('rawlocation_id','location_id'),
-         ('rawinventor', 'rawlocation'):('rawlocation_id','location_id')
+         ('rawassignee', 'rawlocation'):('rawlocation_id','id'),
+         ('rawinventor', 'rawlocation'):('rawlocation_id','id')
         }
 
 
@@ -114,6 +114,7 @@ class TestQuery(models.Model):
         self.colsFilters = []
         self.fieldTables = []
         self.filterTables = []
+        self.joinPairs = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
         self.haveDate = {'pri':0, 'cit':0}
@@ -228,14 +229,17 @@ class TestQuery(models.Model):
                     filterString += " AND " + f
                 i += 1
             if prefix == 'inv':
-                filterString += " AND rawlocation.location_id = rawinventor.rawlocation_id"
+                filterString += " AND rawlocation.id = rawinventor.rawlocation_id"
                 self.tablesToSearch.append('rawinventor')
+                self.filterTables.append('rawinventor')
             elif prefix == 'ass':
-                filterString += " AND rawlocation.location_id = rawassignee.rawlocation_id"
+                filterString += " AND rawlocation.id = rawassignee.rawlocation_id"
+                self.tablesToSearch.append('rawassignee')
                 self.tablesToSearch.append('rawassignee')
             else:
                 print "Error! Wrong type of thing being searched for locaiton!"
             filterString += ")"
+            self.tablesToSearch.append("rawlocation")
             return filterString
         else:
             return ""
@@ -250,7 +254,7 @@ class TestQuery(models.Model):
             toYear = self.dateYears[prefix]['to']
             fromDateString = fromYear + '-' + fromMonth + '-' + fromDay
             toDateString = toYear + '-' + toMonth + '-' + toDay
-            res = '(date('+table+'.'+column+') BETWEEN date('+fromDateString+') AND date('+toDateString+'))'
+            res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
             self.filterTables.append(table)
             return res
         elif self.haveDate[prefix] > 6:
@@ -284,6 +288,7 @@ class TestQuery(models.Model):
                     parts = key.split('-')
                     parts.remove('f')
                     newKey = '-'.join(parts)
+                    self.fieldTables.append(POSTVARMAPS[newKey][0])
                 else:
                     newKey = key
                 self.tablesToSearch.append(POSTVARMAPS[newKey][0])
@@ -291,8 +296,6 @@ class TestQuery(models.Model):
     def updateColsFilters(self):
         keys = self.postVar.keys()
         keys.sort()
-        for key in keys:
-            print key
         for key in keys:
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
@@ -342,10 +345,12 @@ class TestQuery(models.Model):
         for t1 in fdt:
             for t2 in ftt:
                 if (t1,t2) in JOINS.keys():
+                    print "(",t1,", ",t2,")"
                     val = JOINS[(t1,t2)]
-                    self.colsFilters.append("("+val[0]+" = "+val[1]+")")
+                    self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")
         for t1 in ftt:
             for t2 in fdt:
                 if (t1,t2) in JOINS.keys():
+                    print "(",t1,", ",t2,")"
                     val = JOINS[(t1,t2)]
-                    self.colsFilters.append("("+val[0]+" = "+val[1]+")")
+                    self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")
