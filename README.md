@@ -38,7 +38,8 @@ python manage.py syncdb
 python manage.py runserver
 ```
 
-To get the jobs to complete, run the following in another window:
+To get the jobs to complete, first edit the config.ini file, then 
+run the following in another window:
 
 ```
 python run_jobs.py

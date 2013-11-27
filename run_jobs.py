@@ -13,8 +13,21 @@ from unidecode import unidecode
 import time
 import threading
 import socket
+import config
+import urllib
+import re
 
-IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+local = config.get_config('config.ini')['local']
+IP_ADDRESS = ""
+FILESERVER_PORT = config.get_config('config.ini')['port']
+if local:
+    IP_ADDRESS = socket.gethostbyname(socket.gethostname())
+else:
+    f = urllib.urlopen("http://www.canyouseeme.org/")
+    html_doc = f.read()
+    f.close()
+    m = re.search('(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)',html_doc)
+    IP_ADDRESS = m.group(0)
 
 Session = sessionmaker(bind=connection.engine)
 session = Session()
@@ -65,7 +78,8 @@ Your Batch SQL job {0} running the query "{1}" has finished. Please download at 
 def send_notification(job, filename):
     subject = 'Job {0} has finished'.format(job.id)
     filename = filename[14:]
-    url = "http://{0}:8080/{1}".format(IP_ADDRESS, filename)
+    port = FILESERVER_PORT
+    url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename)
     message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     from_email = 'fungpat@berkeley.edu'
     to_email = [job.destination_email]
