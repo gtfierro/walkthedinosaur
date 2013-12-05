@@ -61,9 +61,13 @@ POSTVARMAPS = {'pri-title':('patent', 'title'),
 JOINS = {('patent', 'rawinventor'):('id','patent_id'),
          ('patent', 'rawassignee'):('id','patent_id'),
          ('patent', 'claim'):('id','patent_id'),
+         ('patent', 'rawlawyer'):('id','patent_id'),
          ('patent', 'uspatentcitation'):('id','patent_id'),
          ('rawassignee', 'rawlocation'):('rawlocation_id','id'),
-         ('rawinventor', 'rawlocation'):('rawlocation_id','id')
+         ('rawassignee', 'rawlawyer'):('patent_id','patent_id'),
+         ('rawassignee', 'rawinventor'):('patent_id','patent_id'),
+         ('rawinventor', 'rawlocation'):('rawlocation_id','id'),
+         ('rawinventor', 'rawlawyer'):('patent_id','patent_id')
         }
 
 

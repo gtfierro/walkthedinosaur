@@ -53,6 +53,7 @@ mkdir finished_jobs
 cd finished_jobs
 python -m SimpleHTTPServer 8080
 ```
+This runs the server on port 8080. Please specify the port in config.ini file.
 
 or use the provided Go fileserver. Note tha
 
