@@ -42,7 +42,13 @@ To get the jobs to complete, first edit the config.ini file, then
 run the following in another window:
 
 ```
-python run_jobs.py
+celery -A walkthedinosaur worker -l info
+```
+
+We need a redis server to act as the broker for Celery:
+
+```
+redis-server
 ```
 
 To serve up the files, you're going to want to run a basic fileserver.
