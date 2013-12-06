@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
+from tasks import dojob
 
 from batchsql.models import QueuedJob, CompletedJob, TestQuery
 import connection
@@ -47,4 +48,5 @@ def submit_test(request):
     requested_format = request.POST.get('dataformat')
     job = QueuedJob.create(None, None, requested_format, email, querystring)
     job.save()
+    dojob.delay(job)
     return HttpResponseRedirect('index')

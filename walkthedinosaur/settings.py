@@ -174,4 +174,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'patentinterface@gmail.com'
-EMAIL_HOST_PASSWORD = 'patent123'
+# Celery settings
+BROKER_URL = "redis://"
+CELERY_RESULT_BACKEND = "redis://"
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
