@@ -20,6 +20,7 @@ import socket
 import config
 import urllib
 import re
+from sqlalchemy.exc import OperationalError, DatabaseError, TimeoutError, DisconnectionError
 
 local = config.get_config('config.ini')['local']
 IP_ADDRESS = ""
@@ -94,7 +95,10 @@ def send_notification(job, filename):
 
 @app.task
 def dojob(job):
-    filename = run_job(job)
+    try:
+      filename = run_job(job)
+    except (OperationalError, DatabaseError, TimeoutError, DisconnectionError) as e:
+      dojob.retry(args=(jobs,), exc=e)
     send_notification(job, filename)
     update_job_listing(job, filename)
 
