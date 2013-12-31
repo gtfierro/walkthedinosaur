@@ -166,10 +166,10 @@ class TestQuery(models.Model):
                 else:
                     query += table + " "
                 i += 1
-        query += "WHERE "
         if len(self.colsFilters) == 0:
             query += " "
         else:
+            query += "WHERE "
             cf = list(set(self.colsFilters))
             if ('' in cf): cf.remove('')
             i = 0
