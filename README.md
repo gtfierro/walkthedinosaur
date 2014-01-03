@@ -19,17 +19,24 @@ To set up the Django app, first make sure you have all the dependencies installe
 pip install -r requirements.txt
 ```
 
-Make sure to edit the `walkthedinosaur/settings.py` file to send email:
+Make sure to add a file in the 'walkthedinosaur/' directory with the email settings and your private key for the server.
 
 ```
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
-EMAIL_HOST = '' # For example, smtp.gmail.com if you are using Gmail. 
+EMAIL_HOST = '' # For example, smtp.gmail.com if you are using Gmail.
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your email here'
 EMAIL_HOST_PASSWORD = 'your password here'
 ```
 
+Then, include that file's name in `walkthedinosaur/settings.py`. 
+By default, the settings.py file will import all settings variables from pass_settings.py. 
+To change this file's name, change the line contaning 
+
+from pass_settings import *
+
+and change 'pass_settings" to "filename" if your file is named "filename.py"
 
 Then, create the relevant tables and start the Django server:
 
@@ -45,7 +52,7 @@ run the following in another window:
 celery -A walkthedinosaur worker -l info
 ```
 
-We need a redis server to act as the broker for Celery:
+We need a redis server to act as the broker for Celery, so run the following command:
 
 ```
 redis-server

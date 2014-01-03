@@ -96,9 +96,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '31h4oj%!a#*u1eoeb-3&_lq5tb)+)wutv+#a_dp)$y@9^3=tv3'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -169,11 +166,9 @@ LOGGING = {
     }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'patentinterface@gmail.com'
+#[Settings with password for email and secret key]
+from pass_settings import *
+
 # Celery settings
 BROKER_URL = "redis://"
 CELERY_RESULT_BACKEND = "redis://"
