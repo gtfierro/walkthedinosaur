@@ -169,19 +169,22 @@ class TestQuery(models.Model):
         if len(self.colsFilters) == 0:
             query += " "
         else:
-            query += "WHERE "
             cf = list(set(self.colsFilters))
             if ('' in cf): cf.remove('')
-            i = 0
-            for f in cf:
-                if i < len(cf) - 1:
-                    print "query = ", query
-                    print "f = ", f
-                    query += f + " AND "
-                else:
-                    query += f + " "
-                i += 1
-        query += ";"
+            if len(cf) == 0:
+                query += " "
+            else:
+                query += "WHERE " 
+                i = 0
+                for f in cf:
+                    if i < len(cf) - 1:
+                        print "query = ", query
+                        print "f = ", f
+                        query += f + " AND "
+                    else:
+                        query += f + " "
+                        i += 1
+            query += ";"
         return query
 
     def isField(self, string):
