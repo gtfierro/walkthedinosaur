@@ -33,3 +33,17 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Setings with password and keys
+
+walkthedinosaur/pass_settings.py
+
+# Database files
+
+*.db
+*.sqlite3
+
+# Misc
+finished_jobs/*
+*.*~
+#*.*#

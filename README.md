@@ -19,7 +19,17 @@ To set up the Django app, first make sure you have all the dependencies installe
 pip install -r requirements.txt
 ```
 
-Make sure to add a file in the 'walkthedinosaur/' directory with the email settings and your private key for the server.
+Keep in mind that this does not install the following packages at the time of this commit:  
+
+redis-server 	  (apt-get install redis-server)
+sentry 		  (pip install django-sentry)
+virtualenv 	  (pip install virtualenv)
+raven 		  (pip install raven)
+apache2 	  (apt-get isntall apache2)
+mos_wsgi  	  (apt-get install libapache2-mod-wsgi)
+
+Make sure to add a file in the 'walkthedinosaur/' directory with the email settings and your private key 
+for the server (and any other private settings you many want).
 
 ```
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend

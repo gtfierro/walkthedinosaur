@@ -16,12 +16,18 @@ days.insert(0, '')
 
 
 def index(request):
+    context = {'page': 'home'}
+    return render(request, 'batchsql/index.html', context)
+
+def status(request):
     number_of_queries = len(QueuedJob.objects.all())
     number_of_finished = len(CompletedJob.objects.all())
     context = {'number_of_queries': number_of_queries,
                'jobs': QueuedJob.objects.all(),
-               'number_of_finished': number_of_finished}
-    return render(request, 'batchsql/index.html', context)
+               'number_of_finished': number_of_finished,
+               'page': 'status'}
+    return render(request, 'batchsql/status.html', context)
+
 
 def define_query(request):
     context = {'tables': tables}
@@ -35,10 +41,11 @@ def submit_query(request):
     requested_format = request.POST.get('dataformat')
     job = QueuedJob.create(tablename, fields, requested_format, email, querystring)
     job.save()
-    return HttpResponseRedirect('index')
+    return HttpResponseRedirect('status')
 
 def test(request):
-    context = {'tables': tables, 'months':months, 'years':years, 'days':days}
+    context = {'tables': tables, 'months':months, 'years':years, 'days':days, 
+               'page': 'query'}
     return render(request, 'batchsql/test.html', context)
 
 def submit_test(request):
@@ -49,4 +56,4 @@ def submit_test(request):
     job = QueuedJob.create(None, None, requested_format, email, querystring)
     job.save()
     dojob.delay(job)
-    return HttpResponseRedirect('index')
+    return HttpResponseRedirect('status')
