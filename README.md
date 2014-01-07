@@ -30,8 +30,8 @@ apache2 	  (apt-get isntall apache2)
 mos_wsgi  	  (apt-get install libapache2-mod-wsgi)
 ```
 
-Make sure to add a file in the 'walkthedinosaur/' directory with the email settings and your private key 
-for the server (and any other private settings you many want).
+Make sure to add a file in the `walkthedinosaur/` directory with the email settings and your private key 
+for the server (and any other private settings you may want).
 
 ```
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' # or some other backend
@@ -46,9 +46,11 @@ Then, include that file's name in `walkthedinosaur/settings.py`.
 By default, the settings.py file will import all settings variables from pass_settings.py. 
 To change this file's name, change the line contaning 
 
+```
 from pass_settings import *
+```
 
-and change 'pass_settings" to "filename" if your file is named "filename.py"
+and change `pass_settings` to `filename` if your file is named `filename.py`
 
 Then, create the relevant tables and start the Django server:
 
