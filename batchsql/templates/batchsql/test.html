@@ -1,95 +1,89 @@
 {% extends "batchsql/base.html" %}
 {% block content %}
-<style>
-#div {margin:20px; padding:20px;}
-</style>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-  <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-  <link rel="stylesheet" href="/resources/demos/style.css" />
+
+<script src="/static/js/walk2.js"></script>
+
 <div id="content">
-    <form class="pri-form" action="submit-test" method="post">
+  <form class="pri-form" action="submit-test" method="post">
     {% csrf_token %}
     <p><h2>Search For:</h2></p>
     <div class="row">
-    <div class="col-md-4">
-      <p><b>Primary Information</b></p>
-      <p><input type="checkbox" name="f-pri-title" value="1"> Title of Patent</p>
-      <p><input type="checkbox" name="f-pri-id" value="1"> Patent ID</p>
-      <p><input type="checkbox" name="f-pri-date" value="1"> Date Patent was filed</p>
-      <p><input type="checkbox" name="f-pri-country" value="1"> Country of Patent</p>
-      <p><b>Inventor Information</b></p>
-      <p><input type="checkbox" name="f-inv-name-first" value="1"> First Name of the Inventor</p>
-      <p><input type="checkbox" name="f-inv-name-last" value="1"> Last Name of the Inventor</p>
-      <p><input type="checkbox" name="f-inv-nat" value="1"> Inventor's Nationality</p>
-      <p><input type="checkbox" name="f-inv-loc" value="1"> Inventor's Location</p>
+      <div class="col-md-4">
+	<p>Primary Information</p>
+	<p><input type="checkbox" name="f-pri-title" value="1"> Title of Patent</p>
+	<p><input type="checkbox" name="f-pri-id" value="1"> Patent ID</p>
+	<p><input type="checkbox" name="f-pri-date" value="1"> Date Patent was Granted</p>
+	<p><input type="checkbox" name="f-pri-country" value="1"> Country of Patent</p>
+	<p>Inventor Information</p>
+	<p><input type="checkbox" name="f-inv-name-first" value="1"> First Name of the Inventor</p>
+	<p><input type="checkbox" name="f-inv-name-last" value="1"> Last Name of the Inventor</p>
+	<p><input type="checkbox" name="f-inv-nat" value="1"> Inventor's Nationality</p>
+	<p><input type="checkbox" name="f-inv-loc" value="1"> Inventor's Location</p>
+      </div>
+      <div class="col-md-4">
+	<p>Assignee Information</p>
+	<p><input type="checkbox" name="f-ass-name-first" value="1"> First Name of the Assignee</p>
+	<p><input type="checkbox" name="f-ass-name-last" value="1"> Last Name of the Assignee</p>
+	<p><input type="checkbox" name="f-ass-nat" value="1"> Assignee's Nationality</p>
+	<p><input type="checkbox" name="f-ass-loc" value="1"> Assignee's Location</p>
+	<p><input type="checkbox" name="f-ass-org" value="1"> Assignee's organization</p>
+	<p>Lawyer Information</p>
+	<p><input type="checkbox" name="f-law-name-first" value="1"> First Name of the Lawyer</p>
+	<p><input type="checkbox" name="f-law-name-last" value="1"> Last Name of the Lawyer</p>
+	<p><input type="checkbox" name="f-law-country" value="1"> Lawyer's Country</p>
+	<p><input type="checkbox" name="f-law-org" value="1"> Lawyer's organization</p>
+      </div>
+      <div class="col-md-4">
+	<p>Claims Information</p>
+	<p><input type="checkbox" name="f-cl-text" value="1"> Claim's Text</p>
+	<p><input type="checkbox" name="f-cl-id" value="1"> Claim ID</p>
+	<p><input type="checkbox" name="f-cl-seq" value="1"> Claim Sequence ID</p>
+	<p><input type="checkbox" name="f-cl-seq-d" value="1"> Sequence Number of claim this is dependent on</p>
+	<p>Citation Information</p>
+	<p><input type="checkbox" name="f-cit-id" value="1"> Citation ID</p>
+	<p><input type="checkbox" name="f-cit-id-pa" value="1"> Citation's Patent ID</p>
+	<p><input type="checkbox" name="f-cit-date" value="1"> Date of Citation</p>
+	<p><input type="checkbox" name="f-cl-seq" value="1"> Citation Sequence ID</p>
+	<p><input type="checkbox" name="f-cit-country" value="1"> Country of citation</p>      
+      </div>
     </div>
-    <div class="col-md-4">
-      <p><b>Assignee Information</b></p>
-      <p><input type="checkbox" name="f-ass-name-first" value="1"> First Name of the Assignee</p>
-      <p><input type="checkbox" name="f-ass-name-last" value="1"> Last Name of the Assignee</p>
-      <p><input type="checkbox" name="f-ass-nat" value="1"> Assignee's Nationality</p>
-      <p><input type="checkbox" name="f-ass-loc" value="1"> Assignee's Location</p>
-      <p><input type="checkbox" name="f-ass-org" value="1"> Assignee's organization</p>
-      <p><b>Lawyer Information</b></p>
-      <p><input type="checkbox" name="f-law-name-first" value="1"> First Name of the Lawyer</p>
-      <p><input type="checkbox" name="f-law-name-last" value="1"> Last Name of the Lawyer</p>
-      <p><input type="checkbox" name="f-law-country" value="1"> Lawyer's Country</p>
-      <p><input type="checkbox" name="f-law-org" value="1"> Lawyer's organization</p>
-    </div>
-    <div class="col-md-4">
-      <p><b>Claims Information</b></p>
-      <p><input type="checkbox" name="f-cl-text" value="1"> Claim's Text</p>
-      <p><input type="checkbox" name="f-cl-id" value="1"> Claim ID</p>
-      <p><input type="checkbox" name="f-cl-seq" value="1"> Claim Sequence ID</p>
-      <p><input type="checkbox" name="f-cl-seq-d" value="1"> Sequence Number of claim this is dependent on</p>
-      <p><b>Citation Information</b></p>
-      <p><input type="checkbox" name="f-cit-id" value="1"> Citation ID</p>
-      <p><input type="checkbox" name="f-cit-id-pa" value="1"> Citation's Patent ID</p>
-      <p><input type="checkbox" name="f-cit-date" value="1"> Date of Citation</p>
-      <p><input type="checkbox" name="f-cl-seq" value="1"> Citation Sequence ID</p>
-      <p><input type="checkbox" name="f-cit-country" value="1"> Country of citation</p>      
-    </div>
-    </div>
-
     <h2>Filters:</h2>
-    <h3>Primary Information</h2>
+    <h3>Primary Information</h3>
     <p><input type="text" name="pri-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
     <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID"></p>
-    <p>Date (From: YYYY-MM-DD):
+    <p>Date Granted (From: YYYY-MM-DD):
       <select name="pri-year-from" id="pri-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+	{% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="pri-month-from" id="pri-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+	{% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="pri-day-from" id="pri-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+	{% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
-    <p>Date (To: YYYY-MM-DD):
+    <p>Date Granted (To: YYYY-MM-DD):
       <select name="pri-year-to" id="pri-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+	{% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="pri-month-to" id="pri-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+	{% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="pri-day-to" id="pri-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+	{% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
-    <input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
+    <p><input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
     <br />
     <h3>Inventor Information</h3>
     <p><input type="text" name="inv-name-first" id="inv-name-first" class="form-control" placeholder="First Name of the Inventor" size="64"></p>
     <p><input type="text" name="inv-name-last" id="inv-name-last" class="form-control" placeholder="Last Name of the Inventor" size="64"></p>
     <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
-    </p>
     <p>Location of the Inventor:</p>
     <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
     <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
     <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
-    <h2>Assignee Information</h2></p>
+    <h3>Assignee Information</h3>
     <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
     <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
     <p><input type="text" name="ass-org" id="ass-org" class="form-control" placeholder="Organization"></p>
@@ -102,8 +96,7 @@
     <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
     <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>
     <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization">
-    <p>
-    <input type="text" name="law-country" id="law-Country" class="form-control" placeholder="Lawyer's Country"></p>
+    <p><input type="text" name="law-country" id="law-Country" class="form-control" placeholder="Lawyer's Country"></p>
     <h3>Claims Information</h3>
     <p><input type="text" name="cl-id" id="cl-id" class="form-control" placeholder="ID of the Patent Making the Claims"></p>
     <p><input type="text" name="cl-text" id="cl-text" class="form-control" placeholder="Part of Claim's Text"></p>
@@ -114,48 +107,47 @@
     <p><input type="text" name="cit-id" id="cit-id" class="form-control" placeholder="Document Number for the Cited Record"></p>
     <p>Date (From: YYYY-MM-DD):
       <select name="cit-year-from" id="cit-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+	{% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="cit-month-from" id="cit-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+	{% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="cit-day-from" id="cit-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+	{% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
     <p>Date (To: YYYY-MM-DD):
       <select name="cit-year-to" id="cit-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
+	{% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
       </select>
       <select name="cit-month-to" id="cit-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
+	{% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
       </select>
       <select name="cit-day-to" id="cit-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
+	{% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
       </select>
     </p>
     <p><input type="text" name="cit-seq" id="cit-seq" class="form-control" placeholder="Order in which this citation is cited by patent"></p>
     <p><input type="text" name="cit-country" id="cit-country" class="form-control" placeholder="Country"></p>
     <div class="row">
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" style="width: 500px">
-        </div>
-        <div class="form-group">
-            <label for="dataformat-selector">Data Format</label>
-            <div id="dataformat-selector" class="btn-group">
-                <button type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
-                <button type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
-                <button type="button" class="btn btn-default" data-format="SQL">SQLite</button>
-            </div>
-        </div>
-        <input id="dataformat" name="dataformat" type="hidden" value="CSV"></input>
+      <div class="form-group">
+	<label for="email">Email Address</label>
+	<input type="text" name="email" id="email" class="form-control" placeholder="Enter email" style="width: 500px">
+      </div>
+      <div class="form-group">
+	<label for="dataformat-selector">Data Format</label>
+	<div id="dataformat-selector" class="btn-group">
+	  <button type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
+	  <button type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
+	</div>
+      </div>
+      <input id="dataformat" name="dataformat" type="hidden" value="CSV"></input>
     </div>
     <br />
     <input class="btn btn-primary" type="submit" value="Submit Job" />
     <br />
     <br />
-    </form>
-    
+  </form>
+  
 </div>
 {% endblock content %}

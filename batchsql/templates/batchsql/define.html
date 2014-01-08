@@ -3,6 +3,8 @@
 {% load batchsql_filters %}
 <b>Here you define the database query</b>
 
+<script src="/static/js/walk1.js"></script>
+<script src="/static/js/walk2.js"></script>
 <script type="text/javascript">
     var tables = "{{ tables|to_json }}";
 </script>
@@ -55,7 +57,6 @@
             <div id="dataformat-selector" class="btn-group">
                 <button type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
                 <button type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
-                <button type="button" class="btn btn-default" data-format="SQL">SQLite</button>
             </div>
         </div>
         <input id="dataformat" name="dataformat" type="hidden" value="CSV"></input>

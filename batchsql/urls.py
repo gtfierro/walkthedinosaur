@@ -9,4 +9,5 @@ urlpatterns = patterns('',
         url(r'^submit$', views.submit_query, name='submit'),
         url(r'^test$', views.test, name="test"),
         url(r'^submit-test$', views.submit_test, name='submit-test'),
+        url(r'^status', views.status, name='status'),
 )

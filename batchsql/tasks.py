@@ -1,3 +1,7 @@
+from celery import Celery
+
+app = Celery('tasks', broker='redis://localhost')
+
 from django.conf import settings
 
 import os
@@ -16,6 +20,8 @@ import socket
 import config
 import urllib
 import re
+from sqlalchemy.exc import OperationalError, DatabaseError, TimeoutError, DisconnectionError
+from celery.exceptions import MaxRetriesExceededError
 
 local = config.get_config('config.ini')['local']
 IP_ADDRESS = ""
@@ -62,17 +68,17 @@ def run_job(job):
     filename = create_output(job, result)
     return filename
 
-def update_job_listing(job, filename):
-    cj = models.CompletedJob.create(job, filename)
+def update_job_listing(job, filename, status, error=''):
+    cj = models.CompletedJob.create(job, filename, status, error)
     models.QueuedJob.objects.filter(pk=job.id).delete()
     cj.save()
 
 EMAIL_TEMPLATE = """
 Hello,
 
-Your Batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
+Your batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
 
-- Gabe
+- Fung Institute patent group
 """
 
 def send_notification(job, filename):
@@ -83,24 +89,45 @@ def send_notification(job, filename):
     message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     from_email = 'fungpat@berkeley.edu'
     to_email = [job.destination_email]
-    #send_mail(subject, message, from_email, to_email, fail_silently=False)
-    mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
-    mail_thread.start()
-    mail_thread.join()
+    send_mail(subject, message, from_email, to_email, fail_silently=False)
+    #mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
+    #mail_thread.start()
+    #mail_thread.join()
 
-while True:
-    print 'Attempting to get job...'
-    job = get_job()
-    if job:
-        print 'Got job', job.id
-        print 'Running job', job.id
+@app.task(max_retries=3)
+def dojob(job):
+    try:
         filename = run_job(job)
-        print 'Finished running job', job.id
-        print 'Notifying user...'
+    except (OperationalError, DatabaseError, TimeoutError, DisconnectionError) as e:
+        update_job_listing(job, '', 'Halted', str(e))
+        return ;
+
+# The previous method did not do anything if task failed. Which is why I removed retry 
+# and updated to halted and returned. No returning causes error in send_notification as no
+# filename has been estabilished.       
+#        try:
+#            dojob.retry(args=(job,), exc=e, countdown=5)
+#        except MaxRetriesExceededError as e:
+#            update_job_listing(job, '', 'Halted', str(e))
+    try:
         send_notification(job, filename)
-        print 'Updating job listing...'
-        update_job_listing(job, filename)
-        print 'Finished'
-    else:
-        print 'Could not find job. Retrying in 5...'
-        time.sleep(5)
+    except Exception as e:
+        update_job_listing(job, filename, 'Could Not send Email', str(e))
+    update_job_listing(job, filename, 'Completed')
+
+#while True:
+#    print 'Attempting to get job...'
+#    job = get_job()
+#    if job:
+#        print 'Got job', job.id
+#        print 'Running job', job.id
+#        filename = run_job(job)
+#        print 'Finished running job', job.id
+#        print 'Notifying user...'
+#        send_notification(job, filename)
+#        print 'Updating job listing...'
+#        update_job_listing(job, filename)
+#        print 'Finished'
+#    else:
+#        print 'Could not find job. Retrying in 5...'
+#        time.sleep(5)

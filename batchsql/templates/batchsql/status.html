@@ -1,0 +1,74 @@
+{% extends "batchsql/base.html" %}
+
+{% block content %}
+
+<p>Currently, there are {{number_of_queries}} jobs in the queue.</p>
+<p style="text-align:center">
+  <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#queue">
+    Click to Hide/Show Queued Jobs Table
+  </button>
+</p>
+<br /><br />
+<div id="queue" class="collapse in">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td width="15%">ID</td>
+        <td width="35%">Query</td>
+        <td width="15%">Date Submitted</td>
+        <td width="10%">Format</td>
+        <td width="15%">Email</td>
+	<td width="10%">Status</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for qj in jobs %}
+      <tr>
+	<td width="15%">{{ qj.id }}</td>
+	<td width="35%">{{ qj.query_string }}</td>
+	<td width="15%">{{ qj.date_submitted }}</td>
+	<td width="10%">{{ qj.requested_format }}</td>
+	<td width="15%">{{ qj.destination_email }}</td>
+	<td width="10%">{{ qj.job_status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<br /><br />
+<p>There are {{number_of_finished}} finished jobs.</p>
+<p style="text-align:center">
+  <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#finished">
+    Click to Hide/Show Finished Jobs Table
+  </button>
+</p>
+<br /><br />
+<div id="finished" class="collapse">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+	<td width="25%">ID</td>
+	<td width="25%">Query</td>
+        <td width="15%">Date Completed</td>
+        <td width="10%">Format</td>
+        <td width="15%">Email</td>
+	<td width="10%">Status</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cj in cjobs %}
+      <tr {% if cj.job_status == "Completed"  %} class="success" {% else %} class="danger" {% endif  %}>
+	<td width="25%">{{ cj.old_jobid }}</td>
+	<td width="25%">{{ cj.query_string }}</td>
+	<td width="15%">{{ cj.date_completed }}</td>
+	<td width="10%">{{ cj.requested_format }}</td>
+	<td width="15%">{{ cj.destination_email }}</td>
+	<td width="10%">{{ cj.job_status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock content %}

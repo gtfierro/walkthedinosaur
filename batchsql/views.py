@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect 
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
+from tasks import dojob
 
 from batchsql.models import QueuedJob, CompletedJob, TestQuery
 import connection
@@ -15,12 +16,19 @@ days.insert(0, '')
 
 
 def index(request):
+    context = {'page': 'home'}
+    return render(request, 'batchsql/index.html', context)
+
+def status(request):
     number_of_queries = len(QueuedJob.objects.all())
     number_of_finished = len(CompletedJob.objects.all())
     context = {'number_of_queries': number_of_queries,
-               'jobs': QueuedJob.objects.all(),
-               'number_of_finished': number_of_finished}
-    return render(request, 'batchsql/index.html', context)
+               'jobs': QueuedJob.objects.all().order_by('-date_submitted'),
+               'number_of_finished': number_of_finished,
+               'cjobs':CompletedJob.objects.all().order_by('-date_completed'),
+               'page': 'status'}
+    return render(request, 'batchsql/status.html', context)
+
 
 def define_query(request):
     context = {'tables': tables}
@@ -32,12 +40,13 @@ def submit_query(request):
     fields = request.POST.getlist('fields')
     email = request.POST.get('email')
     requested_format = request.POST.get('dataformat')
-    job = QueuedJob.create(tablename, fields, requested_format, email, querystring)
+    job = QueuedJob.create(tablename, fields, requested_format, email, querystring, 'In Queue')
     job.save()
-    return HttpResponseRedirect('index')
+    return HttpResponseRedirect('status')
 
 def test(request):
-    context = {'tables': tables, 'months':months, 'years':years, 'days':days}
+    context = {'tables': tables, 'months':months, 'years':years, 'days':days, 
+               'page': 'query'}
     return render(request, 'batchsql/test.html', context)
 
 def submit_test(request):
@@ -45,6 +54,7 @@ def submit_test(request):
     querystring = newQuery.getQueryString()
     email = request.POST.get('email')
     requested_format = request.POST.get('dataformat')
-    job = QueuedJob.create(None, None, requested_format, email, querystring)
+    job = QueuedJob.create(None, None, requested_format, email, querystring, 'In Queue')
     job.save()
-    return HttpResponseRedirect('index')
+    dojob.delay(job)
+    return HttpResponseRedirect('status')

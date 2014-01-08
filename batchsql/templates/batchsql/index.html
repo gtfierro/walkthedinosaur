@@ -2,33 +2,15 @@
 
 {% block content %}
 
-<p><a href="{% url 'define' %}">Define a new query</a></p>
-<p><a href="{% url 'test' %}">Define a new query using the newer interface</a></p>
-
-<p>Currently, there are {{number_of_queries}} jobs.</p>
-<table class="table table-striped">
- <thead>
-     <tr>
-         <td>ID</td>
-         <td>Date Submitted</td>
-         <td>Query</td>
-         <td>Format</td>
-         <td>Email</td>
-     </tr>
- </thead>
- <tbody>
- {% for qj in jobs %}
- <tr>
-     <td>{{ qj.id }}</td>
-     <td>{{ qj.date_submitted }}</td>
-     <td>{{ qj.query_string }}</td>
-     <td>{{ qj.requested_format }}</td>
-     <td>{{ qj.destination_email }}</td>
- </tr>
- {% endfor %}
- </tbody>
-</table>
-<p>There are {{number_of_finished}} finished jobs.</p>
-
+<!-- Main component for a primary marketing message or call to action -->
+<div class="jumbotron">
+  <h2>About the Database</h2>
+  <p>Here is some information about the database.</p>
+  <h2>Features</h2>
+  <p>Click on "New Search" to get the information you need from the database. Click on "Check Status" to check the search queue and status of a previous search.</p>
+  <p style="text-align:center">
+    <a class="btn btn-lg btn-primary" href="/batchsql/test" role="button">New Search</a> <a class="btn btn-lg btn-primary" href="/batchsql/status" role="button">Check Status</a>
+  </p>
+</div>
 
 {% endblock content %}

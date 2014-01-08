@@ -1,3 +1,5 @@
 sqlalchemy
 django
 unidecode
+celery
+redis
