@@ -2,3 +2,8 @@
 body {
   padding-top: 70px;
 }
+
+.info {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
