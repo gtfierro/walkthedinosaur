@@ -23,8 +23,9 @@ def status(request):
     number_of_queries = len(QueuedJob.objects.all())
     number_of_finished = len(CompletedJob.objects.all())
     context = {'number_of_queries': number_of_queries,
-               'jobs': QueuedJob.objects.all(),
+               'jobs': QueuedJob.objects.all().order_by('-date_submitted'),
                'number_of_finished': number_of_finished,
+               'cjobs':CompletedJob.objects.all().order_by('-date_completed'),
                'page': 'status'}
     return render(request, 'batchsql/status.html', context)
 
@@ -39,7 +40,7 @@ def submit_query(request):
     fields = request.POST.getlist('fields')
     email = request.POST.get('email')
     requested_format = request.POST.get('dataformat')
-    job = QueuedJob.create(tablename, fields, requested_format, email, querystring)
+    job = QueuedJob.create(tablename, fields, requested_format, email, querystring, 'In Queue')
     job.save()
     return HttpResponseRedirect('status')
 
@@ -53,7 +54,7 @@ def submit_test(request):
     querystring = newQuery.getQueryString()
     email = request.POST.get('email')
     requested_format = request.POST.get('dataformat')
-    job = QueuedJob.create(None, None, requested_format, email, querystring)
+    job = QueuedJob.create(None, None, requested_format, email, querystring, 'In Queue')
     job.save()
     dojob.delay(job)
     return HttpResponseRedirect('status')

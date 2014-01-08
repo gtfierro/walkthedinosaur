@@ -79,15 +79,16 @@ class QueuedJob(models.Model):
                                         choices=FORMAT_CHOICES,
                                         default=CSV)
     destination_email = models.CharField(max_length=50)
-
+    job_status = models.CharField(max_length=20)
     @classmethod
-    def create(klass, tablename, fields, requested_format, destination_email, querystring):
+    def create(klass, tablename, fields, requested_format, destination_email, querystring, status):
         if not querystring:
             querystring = "select {0} from {1};".format(','.join(fields), tablename)
         job = QueuedJob(id = str(uuid1()),
                         query_string = querystring,
                         requested_format = requested_format,
-                        destination_email = destination_email)
+                        destination_email = destination_email,
+                        job_status = status)
         return job
 
 class CompletedJob(models.Model):
@@ -100,15 +101,18 @@ class CompletedJob(models.Model):
                                         default=CSV)
     destination_email = models.CharField(max_length=50)
     result_filename = models.CharField(max_length=50)
-
+    job_status = models.CharField(max_length=25)
+    job_error = models.CharField(max_length=300, default='')
     @classmethod
-    def create(klass, qj, result_filename):
+    def create(klass, qj, result_filename, status, error=''):
         job = CompletedJob(query_string = qj.query_string,
                            requested_format = qj.requested_format,
                            destination_email = qj.destination_email,
                            date_submitted = qj.date_submitted,
                            old_jobid = qj.id,
-                           result_filename = result_filename)
+                           result_filename = result_filename,
+                           job_status = status,
+                           job_error = error)
         return job
 
 class TestQuery(models.Model):
@@ -178,12 +182,12 @@ class TestQuery(models.Model):
                 i = 0
                 for f in cf:
                     if i < len(cf) - 1:
-                        print "query = ", query
-                        print "f = ", f
+                        #print "query = ", query
+                        print "f = ", f,' i = ', i, 'len(cf) = ', len(cf) 
                         query += f + " AND "
                     else:
                         query += f + " "
-                        i += 1
+                    i += 1
             query += ";"
         return query
 

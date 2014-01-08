@@ -21,6 +21,7 @@ import config
 import urllib
 import re
 from sqlalchemy.exc import OperationalError, DatabaseError, TimeoutError, DisconnectionError
+from celery.exceptions import MaxRetriesExceededError
 
 local = config.get_config('config.ini')['local']
 IP_ADDRESS = ""
@@ -67,8 +68,8 @@ def run_job(job):
     filename = create_output(job, result)
     return filename
 
-def update_job_listing(job, filename):
-    cj = models.CompletedJob.create(job, filename)
+def update_job_listing(job, filename, status, error=''):
+    cj = models.CompletedJob.create(job, filename, status, error)
     models.QueuedJob.objects.filter(pk=job.id).delete()
     cj.save()
 
@@ -93,14 +94,26 @@ def send_notification(job, filename):
     #mail_thread.start()
     #mail_thread.join()
 
-@app.task
+@app.task(max_retries=3)
 def dojob(job):
     try:
-      filename = run_job(job)
+        filename = run_job(job)
     except (OperationalError, DatabaseError, TimeoutError, DisconnectionError) as e:
-      dojob.retry(args=(jobs,), exc=e)
-    send_notification(job, filename)
-    update_job_listing(job, filename)
+        update_job_listing(job, '', 'Halted', str(e))
+        return ;
+
+# The previous method did not do anything if task failed. Which is why I removed retry 
+# and updated to halted and returned. No returning causes error in send_notification as no
+# filename has been estabilished.       
+#        try:
+#            dojob.retry(args=(job,), exc=e, countdown=5)
+#        except MaxRetriesExceededError as e:
+#            update_job_listing(job, '', 'Halted', str(e))
+    try:
+        send_notification(job, filename)
+    except Exception as e:
+        update_job_listing(job, filename, 'Could Not send Email', str(e))
+    update_job_listing(job, filename, 'Completed')
 
 #while True:
 #    print 'Attempting to get job...'

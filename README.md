@@ -82,7 +82,7 @@ python -m SimpleHTTPServer 8080
 ```
 This runs the server on port 8080. Please specify the port in config.ini file.
 
-or use the provided Go fileserver. Note tha
+or use the provided Go fileserver (You will need to isntall `go` beforehand).
 
 ```
 go build fileserver.go
