@@ -11,50 +11,51 @@ FORMAT_CHOICES = (
     (SQL, 'Sqlite file')
 )
 
-POSTVARMAPS = {'pri-title':('patent', 'title'), 
+POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
-               'pri-date':('patent', 'date'), 
-               'pri-year-from':('patent','date'), 
-               'pri-month-from':('patent','date'), 
-               'pri-day-from':('patent','date'), 
-               'pri-year-to':('patent','date'), 
-               'pri-month-to':('patent','date'), 
-               'pri-day-to':('patent','date'), 
+               'pri-date-grant':('patent', 'date'),
+               'pri-year-from':('patent','date'),
+               'pri-month-from':('patent','date'),
+               'pri-day-from':('patent','date'),
+               'pri-year-to':('patent','date'),
+               'pri-month-to':('patent','date'),
+               'pri-day-to':('patent','date'),
                'pri-country':('patent','country'),
-               'inv-name-first':('rawinventor', 'name_first'), 
-               'inv-name-last':('rawinventor', 'name_last'), 
+               'pri-date-file':('application','date'),
+               'inv-name-first':('rawinventor', 'name_first'),
+               'inv-name-last':('rawinventor', 'name_last'),
                'inv-nat':('rawinventor', 'nationality'),
                'inv-loc':('rawlocation', 'location_id'),
-               'inv-city':('rawlocation', 'city'), 
-               'inv-state':('rawlocation', 'state'), 
+               'inv-city':('rawlocation', 'city'),
+               'inv-state':('rawlocation', 'state'),
                'inv-country':('rawlocation', 'country'),
-               'ass-type':('rawassignee','type'), 
-               'ass-name-first':('rawassignee','name_first'), 
-               'ass-name-last':('rawassignee','name_last'), 
-               'ass-nat':('rawassignee','nationality'), 
+               'ass-type':('rawassignee','type'),
+               'ass-name-first':('rawassignee','name_first'),
+               'ass-name-last':('rawassignee','name_last'),
+               'ass-nat':('rawassignee','nationality'),
                'ass-org':('rawassignee','organization'),
                'ass-loc':('rawlocation','location_id'),
-               'ass-city':('rawlocation','city'), 
-               'ass-state':('rawlocation','state'), 
+               'ass-city':('rawlocation','city'),
+               'ass-state':('rawlocation','state'),
                'ass-country':('rawlocation','country'),
-               'law-name-first':('rawlawyer','name_first'), 
-               'law-name-last':('rawlawyer','name_last'), 
-               'law-org':('rawlawyer','organization'), 
+               'law-name-first':('rawlawyer','name_first'),
+               'law-name-last':('rawlawyer','name_last'),
+               'law-org':('rawlawyer','organization'),
                'law-country':('rawlawyer','country'),
-               'cl-id':('claim','patent_id'), 
-               'cl-text':('claim','text'), 
-               'cl-seq-d':('claim','dependent'), 
+               'cl-id':('claim','patent_id'),
+               'cl-text':('claim','text'),
+               'cl-seq-d':('claim','dependent'),
                'cl-seq':('claim','sequence'),
-               'cit-id':('uspatentcitation','citation_id'), 
+               'cit-id':('uspatentcitation','citation_id'),
                'cit-id-pa':('uspatentcitation','patent_id'),
-               'cit-date':('uspatentcitation','date'), 
-               'cit-year-from':('uspatentcitation','date'), 
-               'cit-day-from':('uspatentcitation','date'), 
-               'cit-month-from':('uspatentcitation','date'), 
-               'cit-year-to':('uspatentcitation','date'), 
-               'cit-day-to':('uspatentcitation','date'), 
-               'cit-month-to':('uspatentcitation','date'), 
-               'cit-country':('uspatentcitation','country'), 
+               'cit-date':('uspatentcitation','date'),
+               'cit-year-from':('uspatentcitation','date'),
+               'cit-day-from':('uspatentcitation','date'),
+               'cit-month-from':('uspatentcitation','date'),
+               'cit-year-to':('uspatentcitation','date'),
+               'cit-day-to':('uspatentcitation','date'),
+               'cit-month-to':('uspatentcitation','date'),
+               'cit-country':('uspatentcitation','country'),
                'cit-seq':('uspatentcitation','sequence')
               }
 
@@ -63,11 +64,15 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
          ('patent', 'claim'):('id','patent_id'),
          ('patent', 'rawlawyer'):('id','patent_id'),
          ('patent', 'uspatentcitation'):('id','patent_id'),
+         ('patent', 'application'):('id','patent_id'),
          ('rawassignee', 'rawlocation'):('rawlocation_id','id'),
          ('rawassignee', 'rawlawyer'):('patent_id','patent_id'),
          ('rawassignee', 'rawinventor'):('patent_id','patent_id'),
+         ('rawassignee', 'application'):('patent_id','patent_id'),
+         ('rawinventor', 'application'):('patent_id','patent_id'),
          ('rawinventor', 'rawlocation'):('rawlocation_id','id'),
-         ('rawinventor', 'rawlawyer'):('patent_id','patent_id')
+         ('rawinventor', 'rawlawyer'):('patent_id','patent_id'),
+         ('rawlawyer','application'):('patent_id','patent_id')
         }
 
 
@@ -178,12 +183,10 @@ class TestQuery(models.Model):
             if len(cf) == 0:
                 query += " "
             else:
-                query += "WHERE " 
+                query += "WHERE "
                 i = 0
                 for f in cf:
                     if i < len(cf) - 1:
-                        #print "query = ", query
-                        print "f = ", f,' i = ', i, 'len(cf) = ', len(cf) 
                         query += f + " AND "
                     else:
                         query += f + " "
@@ -220,7 +223,7 @@ class TestQuery(models.Model):
         return ' LIKE '
 
     def getLocFilter(self, prefix):
-        if (self.haveLoc[prefix] >= 1): 
+        if (self.haveLoc[prefix] >= 1):
             city = self.locCities[prefix]
             state = self.locStates[prefix]
             country = self.locCountries[prefix]
@@ -246,7 +249,7 @@ class TestQuery(models.Model):
             elif prefix == 'ass':
                 filterString += " AND rawlocation.id = rawassignee.rawlocation_id"
                 self.tablesToSearch.append('rawassignee')
-                self.tablesToSearch.append('rawassignee')
+                self.filterTables.append('rawassignee')
             else:
                 print "Error! Wrong type of thing being searched for locaiton!"
             filterString += ")"
@@ -303,7 +306,7 @@ class TestQuery(models.Model):
                 else:
                     newKey = key
                 self.tablesToSearch.append(POSTVARMAPS[newKey][0])
-                
+
     def updateColsFilters(self):
         keys = self.postVar.keys()
         keys.sort()
@@ -326,7 +329,7 @@ class TestQuery(models.Model):
                         self.dateYears[prefix][postfix] = pv
                     else:
                         print "Error! Invalid input for ", prefix, " date."
-                    self.colsFilters.append(self.getDateFilter(prefix, POSTVARMAPS[key][0], POSTVARMAPS[key][1])) 
+                    self.colsFilters.append(self.getDateFilter(prefix, POSTVARMAPS[key][0], POSTVARMAPS[key][1]))
                 else:
                     self.haveLoc[prefix] += 1
                     if suffix == 'city':
@@ -346,9 +349,35 @@ class TestQuery(models.Model):
                     val = POSTVARMAPS[key]
                     self.filterTables.append(val[0])
                     if comparator == " LIKE ":
-                        self.colsFilters.append("("+val[0]+"."+val[1]+comparator+"'%"+pv+"%'"+")")
+                        if key == 'pri-id' and pv.contains(','):
+                            pv.replace(' ', '')
+                            allpv = pv.split('-')
+                            toAppend = '('
+                            allpvcounter = 0
+                            for value in allpv:
+                                if allpvcounter < len(allpv) - 1:
+                                    toAppend += "("+val[0]+"."+val[1]+comparator+"'%"+value+"%'"+") OR "
+                                else:
+                                    toAppend += "("+val[0]+"."+val[1]+comparator+"'%"+value+"%'"+")"
+                            toAppend += ")"
+                            self.colsFilters.append(toAppend)
+                        else:
+                            self.colsFilters.append("("+val[0]+"."+val[1]+comparator+"'%"+pv+"%'"+")")
                     else:
-                        self.colsFilters.append("("+val[0]+"."+val[1]+comparator+pv+" )")
+                        if key == 'pri-id' and pv.contains(','):
+                            pv.replace(' ', '')
+                            allpv = pv.split('-')
+                            toAppend = '('
+                            allpvcounter = 0
+                            for value in allpv:
+                                if allpvcounter < len(allpv) - 1:
+                                    toAppend += "("+val[0]+"."+val[1]+comparator+value+") OR "
+                                else:
+                                    toAppend += "("+val[0]+"."+val[1]+comparator+value+")"
+                            toAppend += ")"
+                            self.colsFilters.append(toAppend)
+                        else:
+                            self.colsFilters.append("("+val[0]+"."+val[1]+comparator+pv+" )")
 
     def updateJoins(self):
         fdt = list(set(self.fieldTables))
@@ -356,12 +385,10 @@ class TestQuery(models.Model):
         for t1 in fdt:
             for t2 in ftt:
                 if (t1,t2) in JOINS.keys():
-                    print "(",t1,", ",t2,")"
                     val = JOINS[(t1,t2)]
                     self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")
         for t1 in ftt:
             for t2 in fdt:
                 if (t1,t2) in JOINS.keys():
-                    print "(",t1,", ",t2,")"
                     val = JOINS[(t1,t2)]
                     self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")

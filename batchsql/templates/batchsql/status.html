@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       {% for qj in jobs %}
-      <tr>
+      <tr {% if qj.job_status == "Executing"  %} class="info" {% endif  %}>
 	<td width="15%">{{ qj.id }}</td>
 	<td width="35%">{{ qj.query_string }}</td>
 	<td width="15%">{{ qj.date_submitted }}</td>

@@ -63,7 +63,7 @@ def run_job(job):
     return filename
 
 def update_job_listing(job, filename):
-    cj = models.CompletedJob.create(job, filename)
+    cj = models.CompletedJob.create(job, filename, 'Completed')
     models.QueuedJob.objects.filter(pk=job.id).delete()
     cj.save()
 
@@ -72,7 +72,7 @@ Hello,
 
 Your Batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
 
-- Gabe
+- Fung Institute Patent Group (run_jobs.py) 
 """
 
 def send_notification(job, filename):

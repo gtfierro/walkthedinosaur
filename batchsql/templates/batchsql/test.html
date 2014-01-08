@@ -12,7 +12,8 @@
 	<p>Primary Information</p>
 	<p><input type="checkbox" name="f-pri-title" value="1"> Title of Patent</p>
 	<p><input type="checkbox" name="f-pri-id" value="1"> Patent ID</p>
-	<p><input type="checkbox" name="f-pri-date" value="1"> Date Patent was Granted</p>
+	<p><input type="checkbox" name="f-pri-date-file" value="1"> Date Patent was Filed</p>
+	<p><input type="checkbox" name="f-pri-date-grant" value="1"> Date Patent was Granted</p>
 	<p><input type="checkbox" name="f-pri-country" value="1"> Country of Patent</p>
 	<p>Inventor Information</p>
 	<p><input type="checkbox" name="f-inv-name-first" value="1"> First Name of the Inventor</p>
@@ -50,7 +51,7 @@
     <h2>Filters:</h2>
     <h3>Primary Information</h3>
     <p><input type="text" name="pri-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
-    <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID"></p>
+    <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID. Enter multiple ID's separated by commas."></p>
     <p>Date Granted (From: YYYY-MM-DD):
       <select name="pri-year-from" id="pri-year-from">
 	{% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}

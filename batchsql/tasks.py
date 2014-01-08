@@ -69,26 +69,43 @@ def run_job(job):
     return filename
 
 def update_job_listing(job, filename, status, error=''):
-    cj = models.CompletedJob.create(job, filename, status, error)
-    models.QueuedJob.objects.filter(pk=job.id).delete()
-    cj.save()
+    if status == 'Executing':
+        job.job_status = 'Executing'
+        job.save()
+    else:
+        cj = models.CompletedJob.create(job, filename, status, error)
+        models.QueuedJob.objects.filter(pk=job.id).delete()
+        cj.save()
 
 EMAIL_TEMPLATE = """
 Hello,
 
 Your batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
 
-- Fung Institute patent group
+- Fung Institute Patent Group
 """
 
-def send_notification(job, filename):
+ERROR_EMAIL_TEMPLATE = """
+Hello,
+
+Your batch SQL job {0} running the query "{1}" has been halted.
+
+We are very sorry for the onconvenience. If you have any questions, please email patentinterface@gmail.com.
+
+- Fung Institute Patent Group
+"""
+
+def send_notification(job, filename='', successful=False):
     subject = 'Job {0} has finished'.format(job.id)
-    filename = filename[14:]
-    port = FILESERVER_PORT
-    url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename)
-    message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     from_email = 'fungpat@berkeley.edu'
     to_email = [job.destination_email]
+    if (successful):
+        filename = filename[14:]
+        port = FILESERVER_PORT
+        url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename)
+        message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
+    else:
+        message = ERROR_EMAIL_TEMPLATE.forma(job.id, job.query_string)
     send_mail(subject, message, from_email, to_email, fail_silently=False)
     #mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
     #mail_thread.start()
@@ -97,10 +114,15 @@ def send_notification(job, filename):
 @app.task(max_retries=3)
 def dojob(job):
     try:
+        update_job_listing(job, '', 'Executing')
         filename = run_job(job)
     except (OperationalError, DatabaseError, TimeoutError, DisconnectionError) as e:
         update_job_listing(job, '', 'Halted', str(e))
-        return ;
+        try:
+            send_notification(job)
+        except:
+            return
+        return
 
 # The previous method did not do anything if task failed. Which is why I removed retry 
 # and updated to halted and returned. No returning causes error in send_notification as no
@@ -110,7 +132,7 @@ def dojob(job):
 #        except MaxRetriesExceededError as e:
 #            update_job_listing(job, '', 'Halted', str(e))
     try:
-        send_notification(job, filename)
+        send_notification(job, filename, True)
     except Exception as e:
         update_job_listing(job, filename, 'Could Not send Email', str(e))
     update_job_listing(job, filename, 'Completed')
