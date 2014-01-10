@@ -1,4 +1,5 @@
 window.onload=function() {
+    $('#CSV').click();
     $('#search-form').validate({
 	debug: true,
 	rules: {

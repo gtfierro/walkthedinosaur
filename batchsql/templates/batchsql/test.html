@@ -133,14 +133,14 @@
   <p><input type="text" name="cit-country" id="cit-country" class="form-control" placeholder="Country"></p>
   <div class="row">
     <div class="form-group">
-      <label class="control-label" for="email">Email Address</label>
+      <label class="control-label" for="email">Email Address<font color="red"> * </font></label>
       <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" style="width: 500px" />
     </div>
     <div class="form-group">
-      <label for="dataformat-selector">Data Format</label>
+      <label for="dataformat-selector">Data Format<font color="red"> * </font></label>
       <div id="dataformat-selector" class="btn-group">
-	<button type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
-	<button type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
+	<button id="CSV" type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
+	<button id="TSV" type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
       </div>
     </div>
     <input id="dataformat" name="dataformat" type="hidden" value="CSV"></input>
