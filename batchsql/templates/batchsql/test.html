@@ -53,28 +53,28 @@
   <h3>Primary Information</h3>
   <p><input type="text" name="pri-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
   <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID (You can enter multiple IDs separated by commas)."></p>
-  <p>Date Granted (From: YYYY-MM-DD):
-    <select name="pri-year-from" id="pri-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
-    </select>
-    <select name="pri-month-from" id="pri-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
-    </select>
-    <select name="pri-day-from" id="pri-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
-    </select>
-  </p>
-  <p>Date Granted (To: YYYY-MM-DD):
-    <select name="pri-year-to" id="pri-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
-    </select>
-    <select name="pri-month-to" id="pri-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
-    </select>
-    <select name="pri-day-to" id="pri-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
-    </select>
-  </p>
+  <div class="form-inline">
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_file_from">Date Granted From</label>
+      <input name="pri_date_file_from" id="pri-date-file-from" class="form-control" placeholder="Date Filed From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_file_to">Date Granted To</label>
+      <input name="pri_date_file_to" id="pri-date-file-to" class="form-control" placeholder="Date Filed To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+  </div>
+    <div class="padding"></div>
+  <div class="form-inline">
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_grant_from">Date Granted From</label>
+      <input name="pri_date_grant_from" id="pri-date-grant-from" class="form-control" placeholder="Date Granted From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_grant_to">Date Granted To</label>
+      <input name="pri_date_grant_to" id="pri-date-grant-to" class="form-control" placeholder="Date Granted To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+  </div>
+  <div class="padding"></div>
   <p><input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
   <br />
   <h3>Inventor Information</h3>
@@ -107,28 +107,17 @@
   <h3>Patent Citation Information</h3>
   <p><input type="text" name="cit-id-pa" id="cit-id-pa" class="form-control" placeholder="Patent ID of the Patent that Cites this record"></p>
   <p><input type="text" name="cit-id" id="cit-id" class="form-control" placeholder="Document Number for the Cited Record"></p>
-  <p>Date (From: YYYY-MM-DD):
-    <select name="cit-year-from" id="cit-year-from">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
-    </select>
-    <select name="cit-month-from" id="cit-month-from">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
-    </select>
-    <select name="cit-day-from" id="cit-day-from">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
-    </select>
-  </p>
-  <p>Date (To: YYYY-MM-DD):
-    <select name="cit-year-to" id="cit-year-to">
-      {% for year in years %} <option value="{{ year }}" {% if year == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ year }}</option>{% endfor %}
-      </select>
-    <select name="cit-month-to" id="cit-month-to">
-      {% for month in months %} <option value="{{ month }}" {% if month == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ month }}</option>{% endfor %}
-    </select>
-    <select name="cit-day-to" id="cit-day-to">
-      {% for day in days %} <option value="{{ day }}" {% if day == "" %} selected="true" { % else %} selected="false" {% endif %}>{{ day }}</option>{% endfor %}
-    </select>
-  </p>
+  <div class="form-inline">
+    <div class="form-group">
+      <label class="sr-only" for="cit_date_from">Date (From)</label>
+      <input name="cit_date_from" id="cit-date-from" class="form-control" placeholder="Date From (YYYY-MM-DD)" type="text" size="30", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="cit_date_to">Date (To)</label>
+      <input name="cit_date_to" id="cit-date-to" class="form-control" placeholder="Date To (YYYY-MM-DD)" type="text" size="30" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+  </div>
+  <div class="padding"></div>
   <p><input type="text" name="cit-seq" id="cit-seq" class="form-control" placeholder="Order in which this citation is cited by patent"></p>
   <p><input type="text" name="cit-country" id="cit-country" class="form-control" placeholder="Country"></p>
   <div class="row">

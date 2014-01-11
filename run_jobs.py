@@ -94,6 +94,8 @@ while True:
     if job:
         print 'Got job', job.id
         print 'Running job', job.id
+        job.job_status = 'Executing'
+        job.save()
         filename = run_job(job)
         print 'Finished running job', job.id
         print 'Notifying user...'

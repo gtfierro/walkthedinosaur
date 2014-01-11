@@ -10,30 +10,32 @@
 </p>
 <br /><br />
 <div id="queue" class="collapse in">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <td width="15%">ID</td>
-        <td width="35%">Query</td>
-        <td width="15%">Date Submitted</td>
-        <td width="10%">Format</td>
-        <td width="15%">Email</td>
-	<td width="10%">Status</td>
-      </tr>
-    </thead>
-    <tbody>
-      {% for qj in jobs %}
-      <tr {% if qj.job_status == "Executing"  %} class="info" {% endif  %}>
-	<td width="15%">{{ qj.id }}</td>
-	<td width="35%">{{ qj.query_string }}</td>
-	<td width="15%">{{ qj.date_submitted }}</td>
-	<td width="10%">{{ qj.requested_format }}</td>
-	<td width="15%">{{ qj.destination_email }}</td>
-	<td width="10%">{{ qj.job_status }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+	<tr>
+          <td width="15%">ID</td>
+          <td width="35%">Query</td>
+          <td width="15%">Date Submitted</td>
+          <td width="10%">Format</td>
+          <td width="15%">Email</td>
+	  <td width="10%">Status</td>
+	</tr>
+      </thead>
+      <tbody>
+	{% for qj in jobs %}
+	<tr {% if qj.job_status == "Executing"  %} class="info" {% endif  %}>
+	  <td width="15%">{{ qj.id }}</td>
+	  <td width="35%">{{ qj.query_string }}</td>
+	  <td width="15%">{{ qj.date_submitted }}</td>
+	  <td width="10%">{{ qj.requested_format }}</td>
+	  <td width="15%">{{ qj.destination_email }}</td>
+	  <td width="10%">{{ qj.job_status }}</td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 <br /><br />
 <p>There are {{number_of_finished}} finished jobs.</p>
@@ -44,30 +46,32 @@
 </p>
 <br /><br />
 <div id="finished" class="collapse">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-	<td width="25%">ID</td>
-	<td width="25%">Query</td>
-        <td width="15%">Date Completed</td>
-        <td width="10%">Format</td>
-        <td width="15%">Email</td>
-	<td width="10%">Status</td>
-      </tr>
-    </thead>
-    <tbody>
-      {% for cj in cjobs %}
-      <tr {% if cj.job_status == "Completed"  %} class="success" {% else %} class="danger" {% endif  %}>
-	<td width="25%">{{ cj.old_jobid }}</td>
-	<td width="25%">{{ cj.query_string }}</td>
-	<td width="15%">{{ cj.date_completed }}</td>
-	<td width="10%">{{ cj.requested_format }}</td>
-	<td width="15%">{{ cj.destination_email }}</td>
-	<td width="10%">{{ cj.job_status }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+	<tr>
+	  <td width="25%">ID</td>
+	  <td width="25%">Query</td>
+          <td width="15%">Date Completed</td>
+          <td width="10%">Format</td>
+          <td width="15%">Email</td>
+	  <td width="10%">Status</td>
+	</tr>
+      </thead>
+      <tbody>
+	{% for cj in cjobs %}
+	<tr {% if cj.job_status == "Completed"  %} class="success" {% else %} class="danger" {% endif  %}>
+	  <td width="25%">{{ cj.old_jobid }}</td>
+	  <td width="25%">{{ cj.query_string }}</td>
+	  <td width="15%">{{ cj.date_completed }}</td>
+	  <td width="10%">{{ cj.requested_format }}</td>
+	  <td width="15%">{{ cj.destination_email }}</td>
+	  <td width="10%">{{ cj.job_status }}</td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 

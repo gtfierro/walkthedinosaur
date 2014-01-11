@@ -2,6 +2,8 @@ from django.db import models
 from datetime import datetime
 from uuid import uuid1
 
+import time
+
 CSV = 'CSV'
 TSV = 'TSV'
 SQL = 'SQL'
@@ -14,14 +16,12 @@ FORMAT_CHOICES = (
 POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
                'pri-date-grant':('patent', 'date'),
-               'pri-year-from':('patent','date'),
-               'pri-month-from':('patent','date'),
-               'pri-day-from':('patent','date'),
-               'pri-year-to':('patent','date'),
-               'pri-month-to':('patent','date'),
-               'pri-day-to':('patent','date'),
-               'pri-country':('patent','country'),
+               'pri-date-grant-from':('patent', 'date'),
+               'pri-date-grant-to':('patent', 'date'),
                'pri-date-file':('application','date'),
+               'pri-date-file-from':('patent', 'date'),
+               'pri-date-file-to':('patent', 'date'),
+               'pri-country':('patent','country'),
                'inv-name-first':('rawinventor', 'name_first'),
                'inv-name-last':('rawinventor', 'name_last'),
                'inv-nat':('rawinventor', 'nationality'),
@@ -49,12 +49,8 @@ POSTVARMAPS = {'pri-title':('patent', 'title'),
                'cit-id':('uspatentcitation','citation_id'),
                'cit-id-pa':('uspatentcitation','patent_id'),
                'cit-date':('uspatentcitation','date'),
-               'cit-year-from':('uspatentcitation','date'),
-               'cit-day-from':('uspatentcitation','date'),
-               'cit-month-from':('uspatentcitation','date'),
-               'cit-year-to':('uspatentcitation','date'),
-               'cit-day-to':('uspatentcitation','date'),
-               'cit-month-to':('uspatentcitation','date'),
+               'cit-date-from':('uspatentcitation', 'date'),
+               'cit-date-to':('uspatentcitation', 'date'),
                'cit-country':('uspatentcitation','country'),
                'cit-seq':('uspatentcitation','sequence')
               }
@@ -130,19 +126,12 @@ class TestQuery(models.Model):
         self.joinPairs = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
-        self.haveDate = {'pri':0, 'cit':0}
+        self.haveDate = {'file':{'count':0, 'start':'', 'end':''},
+                         'cit':{'count':0, 'start':'', 'end':''},
+                         'grant':{'count':0, 'start':'', 'end':''}}
         self.locCities = {'inv':'', 'ass':''}
         self.locStates = {'inv':'', 'ass':''}
         self.locCountries = {'inv':'', 'ass':''}
-        self.priDay = {'from':'', 'to':''}
-        self.citDay = {'from':'', 'to':''}
-        self.priMonth = {'from':'', 'to':''}
-        self.citMonth = {'from':'', 'to':''}
-        self.priYear = {'from':'', 'to':''}
-        self.citYear = {'from':'', 'to':''}
-        self.dateDays = {'pri':self.priDay, 'cit':self.citDay}
-        self.dateMonths = {'pri':self.priMonth, 'cit':self.citMonth}
-        self.dateYears = {'pri':self.priYear, 'cit':self.citYear}
 
     def getQueryString(self):
         self.updateTablesToSearch()
@@ -201,11 +190,8 @@ class TestQuery(models.Model):
     def isDate(self, string):
         prefix = string.split('-')[0]
         suffix = string.split('-')[1]
-        if (prefix == 'pri') or (prefix == 'cit'):
-            if (suffix == 'month') or (suffix == 'year') or (suffix == 'day'):
-                return True
-        else:
-            return False
+        if ((prefix == 'pri') or (prefix == 'cit')) and (suffix == 'date'):
+            return True
 
     def isLoc(self, string):
         prefix = string.split('-')[0]
@@ -217,7 +203,7 @@ class TestQuery(models.Model):
             return False
 
     def getComparator(self, key):
-        numbers = ['pri-id', 'cl-id', 'cl-seq-d', 'cl-seq', 'cit-seq']
+        numbers = ['cl-id', 'cl-seq-d', 'cl-seq', 'cit-seq']
         if key in numbers:
             return ' = '
         return ' LIKE '
@@ -258,29 +244,80 @@ class TestQuery(models.Model):
         else:
             return ""
 
-    def getDateFilter(self, prefix, table, column):
-        if (self.haveDate[prefix] == 6):
-            fromDay = self.dateDays[prefix]['from']
-            fromMonth = self.dateMonths[prefix]['from']
-            fromYear = self.dateYears[prefix]['from']
-            toDay = self.dateDays[prefix]['to']
-            toMonth = self.dateMonths[prefix]['to']
-            toYear = self.dateYears[prefix]['to']
-            fromDateString = fromYear + '-' + fromMonth + '-' + fromDay
-            toDateString = toYear + '-' + toMonth + '-' + toDay
+    def getDateFilter(self, typeWanted, table, column, force=False):
+        if (self.haveDate[typeWanted]['count'] == 2):
+            fromDateString = self.haveDate[typeWanted]['from']
+            toDateString = self.haveDate[typeWanted]['to']
             res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
             self.filterTables.append(table)
             return res
-        elif self.haveDate[prefix] > 6:
+        elif self.haveDate[typeWanted]['count'] > 2:
             print 'Error, counted date of ', prefix, ' too many times!'
+            return ''
+        elif force:
+            if self.haveDate[typeWanted]['from'] != '':
+                fromDateString = self.haveDate[typeWanted]['from']
+                toDateString = time.strftime("%Y-%m-%d")
+                res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
+                self.filterTables.append(table)
+                return res
+            elif self.haveDate[typeWanted]['to']:
+                fromDateString = '1980-1-1'
+                toDateString = self.haveDate[typeWanted]['to']
+                res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
+                self.filterTables.append(table)
+                return res
+            else:
+                print 'Cannot force when you dont have any date!'
+                return ''
         else:
             return ''
 
+    def getTypeWanted(self, key):
+        parts = key.split('-')
+        if parts[0] == 'pri':
+            return parts[2]
+        return parts[0]
+
+    def processDateInput(self, key, pv):
+        parts = key.split('-')
+        if parts[0] == 'pri':
+            if parts[2] == 'file' and parts[3] == 'from':
+                self.haveDate['file']['from'] = pv
+                self.haveDate['file']['count'] += 1
+            elif parts[2] == 'file' and parts[3] == 'to':
+                self.haveDate['file']['to'] = pv
+                self.haveDate['file']['count'] += 1
+            elif parts[2] == 'grant' and parts[3] == 'from':
+                self.haveDate['grant']['from'] = pv
+                self.haveDate['grant']['count'] += 1
+            elif parts[2] == 'grant' and parts[3] == 'to':
+                self.haveDate['grant']['to'] = pv
+                self.haveDate['grant']['count'] += 1
+            else:
+                print 'Cannot parse date! Invalid Key = ', key
+        else:
+            if parts[2] == 'from':
+                self.haveDate['cit']['from'] = pv
+                self.haveDate['cit']['count'] += 1
+            elif parts[2] == 'to':
+                self.haveDate['cit']['to'] = pv
+                self.haveDate['cit']['count'] += 1
+            else:
+                print 'Cannot parse date! Invalid Key = ', key
+
+    def getNewDateKey(self, key):
+        keysDict = {'file':'pri-date-file',
+                    'grant':'pri-date-grant',
+                    'cit':'cit-date'}
+        return keysDict[key]
 
     def updateColsToSearch(self):
         for key in self.postVar.keys():
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
+            if '_' in key:
+                key = key.replace('_','-')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
                 pass
             elif self.isField(key):
@@ -295,6 +332,8 @@ class TestQuery(models.Model):
         for key in self.postVar.keys():
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
+            if '_' in key:
+                key = key.replace('_','-')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
                 pass
             else:
@@ -313,23 +352,17 @@ class TestQuery(models.Model):
         for key in keys:
             key = key.encode('ascii')
             pv = self.postVar[key].encode('ascii')
+            if '_' in key:
+                key = key.replace('_','-')
             if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or self.isField(key):
                 self.colsFilters.append('')
-            elif self.isDate(key) or self.isLoc(key):
+            elif self.isLoc(key) or self.isDate(key):
                 prefix = key.split('-')[0]
                 suffix = key.split('-')[1]
                 if self.isDate(key):
-                    postfix = key.split('-')[2]
-                    self.haveDate[prefix] += 1
-                    if suffix == 'month':
-                        self.dateMonths[prefix][postfix] = pv
-                    elif suffix == 'day':
-                        self.dateDays[prefix][postfix] = pv
-                    elif suffix == 'year':
-                        self.dateYears[prefix][postfix] = pv
-                    else:
-                        print "Error! Invalid input for ", prefix, " date."
-                    self.colsFilters.append(self.getDateFilter(prefix, POSTVARMAPS[key][0], POSTVARMAPS[key][1]))
+                    self.processDateInput(key, pv)
+                    typeWanted = self.getTypeWanted(key)
+                    self.colsFilters.append(self.getDateFilter(typeWanted, POSTVARMAPS[key][0], POSTVARMAPS[key][1]))
                 else:
                     self.haveLoc[prefix] += 1
                     if suffix == 'city':
@@ -378,6 +411,10 @@ class TestQuery(models.Model):
                             self.colsFilters.append(toAppend)
                         else:
                             self.colsFilters.append("("+val[0]+"."+val[1]+comparator+pv+" )")
+        for key in self.haveDate.keys():
+            if self.haveDate[key]['count'] == 1:
+                newKey = self.getNewDateKey(key)
+                self.colsFilters.append(self.getDateFilter(key, POSTVARMAPS[newKey][0], POSTVARMAPS[newKey][1], True))
 
     def updateJoins(self):
         fdt = list(set(self.fieldTables))
