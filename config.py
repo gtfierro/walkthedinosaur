@@ -4,7 +4,9 @@ Handles getting configuration options from the file
 """
 from ConfigParser import ConfigParser
 
-def get_config(filename):
+cfgfile = '/home/aditya/patent/walkthedinosaur/config.ini'
+
+def get_config(filename=cfgfile):
     """
     Grabs configuration file and parses options.
     """

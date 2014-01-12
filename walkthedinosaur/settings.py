@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'jobs.db',                      # Or path to database file if using sqlite3.
+        'NAME': '/home/aditya/patent/walkthedinosaur/jobs.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3: USPTO_2005-2013_data
         'USER': '',
         'PASSWORD': '',

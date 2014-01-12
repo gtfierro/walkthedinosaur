@@ -10,6 +10,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'walkthedinosaur.settings'
 from batchsql import models
 from django.core.mail import send_mail
 import connection
+import config
 from sqlalchemy.orm import sessionmaker
 from uuid import uuid1
 import csv
@@ -23,9 +24,11 @@ import re
 from sqlalchemy.exc import OperationalError, DatabaseError, TimeoutError, DisconnectionError
 from celery.exceptions import MaxRetriesExceededError
 
-local = config.get_config('config.ini')['local']
+# cfgfile = '/home/aditya/patent/walkthedinosaur/config.ini'
+
+local = config.get_config(config.cfgfile)['local']
 IP_ADDRESS = ""
-FILESERVER_PORT = config.get_config('config.ini')['port']
+FILESERVER_PORT = config.get_config(config.cfgfile)['port']
 if local:
     IP_ADDRESS = socket.gethostbyname(socket.gethostname())
 else:

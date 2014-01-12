@@ -9,7 +9,9 @@ from sqlalchemy import create_engine, MetaData, Table, inspect
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
 
-def get_engine(configfile='config.ini'):
+
+# Uses the file specified in config.py as default config file.
+def get_engine(configfile=config.cfgfile):
     """
     Uses configuration options in [configfile] to initialize an engine to generate
     connections to the database

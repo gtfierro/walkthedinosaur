@@ -19,7 +19,7 @@ To set up the Django app, first make sure you have all the dependencies installe
 pip install -r requirements.txt
 ```
 
-Keep in mind that this does not install the following packages at the time of this commit:  
+Keep in mind that this does not install the following packages at the time of this commit (All of which can be use for enhancing the app):  
 
 ```
 redis-server 	  (apt-get install redis-server)
@@ -30,7 +30,7 @@ apache2 	  (apt-get isntall apache2)
 mos_wsgi  	  (apt-get install libapache2-mod-wsgi)
 ```
 
-Make sure to add a file in the `walkthedinosaur/` directory with the email settings and your private key 
+Make sure to add a file in the `walkthedinosaur/` directory with the following email settings, and your private key 
 for the server (and any other private settings you may want).
 
 ```
@@ -51,6 +51,10 @@ from pass_settings import *
 ```
 
 and change `pass_settings` to `filename` if your file is named `filename.py`
+
+Next, specify the path to your config file in the file `config.py` changing the line 
+
+`cfgfile = '/path/to/config.ini'`
 
 Then, create the relevant tables and start the Django server:
 
