@@ -66,6 +66,12 @@ run the following in another window:
 celery -A walkthedinosaur worker -l info
 ```
 
+Or you could use the older `run_jobs.py`. IMPORTANT: Support for this will end soon!
+
+```
+python run_jobs.py
+```
+
 We need a redis server to act as the broker for Celery, so run the following command:
 
 ```
