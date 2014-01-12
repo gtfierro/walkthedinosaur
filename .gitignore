@@ -48,3 +48,4 @@ finished_jobs/*
 *.*~
 #*.*#
 *.wsgi
+config.ini

@@ -1,5 +1,6 @@
 # Django settings for walkthedinosaur project.
 
+import config
 import os
 PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +17,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/home/aditya/patent/walkthedinosaur/jobs.db',                      # Or path to database file if using sqlite3.
+        'NAME': config.CONFIG_PATH_PREFIX + '/jobs.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3: USPTO_2005-2013_data
         'USER': '',
         'PASSWORD': '',

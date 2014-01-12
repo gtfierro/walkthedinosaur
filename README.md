@@ -52,10 +52,6 @@ from pass_settings import *
 
 and change `pass_settings` to `filename` if your file is named `filename.py`
 
-Next, specify the path to your config file in the file `config.py` changing the line 
-
-`cfgfile = '/path/to/config.ini'`
-
 Then, create the relevant tables and start the Django server:
 
 ```

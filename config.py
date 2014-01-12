@@ -3,8 +3,11 @@
 Handles getting configuration options from the file
 """
 from ConfigParser import ConfigParser
+import os
 
-cfgfile = '/home/aditya/patent/walkthedinosaur/config.ini'
+CONFIG_PATH_PREFIX = os.path.dirname(os.path.abspath(__file__))
+
+cfgfile = CONFIG_PATH_PREFIX + '/config.ini'
 
 def get_config(filename=cfgfile):
     """
