@@ -47,3 +47,4 @@ walkthedinosaur/pass_settings.py
 finished_jobs/*
 *.*~
 #*.*#
+*.wsgi
