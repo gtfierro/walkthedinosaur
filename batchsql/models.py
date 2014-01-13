@@ -95,7 +95,7 @@ class QueuedJob(models.Model):
 class CompletedJob(models.Model):
     old_jobid = models.CharField(max_length=50)
     date_submitted = models.DateTimeField()
-    date_completed = models.DateTimeField(default=datetime.now())
+    date_completed = models.DateTimeField()
     query_string = models.TextField()
     requested_format = models.CharField(max_length=3,
                                         choices=FORMAT_CHOICES,
@@ -110,6 +110,7 @@ class CompletedJob(models.Model):
                            requested_format = qj.requested_format,
                            destination_email = qj.destination_email,
                            date_submitted = qj.date_submitted,
+                           date_completed = datetime.now(),
                            old_jobid = qj.id,
                            result_filename = result_filename,
                            job_status = status,
