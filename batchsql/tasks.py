@@ -24,8 +24,6 @@ import re
 from sqlalchemy.exc import OperationalError, DatabaseError, TimeoutError, DisconnectionError
 from celery.exceptions import MaxRetriesExceededError
 
-# cfgfile = '/home/aditya/patent/walkthedinosaur/config.ini'
-
 local = config.get_config(config.cfgfile)['local']
 IP_ADDRESS = ""
 FILESERVER_PORT = config.get_config(config.cfgfile)['port']
@@ -106,6 +104,8 @@ def send_notification(job, filename='', successful=False):
         filename = filename[14:]
         port = FILESERVER_PORT
         url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename)
+        if local == 'no':
+            url = "http://{0}/{1}".format(IP_ADDRESS, filename)
         message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     else:
         message = ERROR_EMAIL_TEMPLATE.forma(job.id, job.query_string)

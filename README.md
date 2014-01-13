@@ -95,5 +95,15 @@ go build fileserver.go
 ./fileserver
 ```
 
+If you are using apache2 to serve files, you can serve these files using apache too. In your httpd.conf, put the following:
+```
+AliasMatch ^/finished_jobs/([^/]*\.csv) /path/to/finished_jobs/$1
+AliasMatch ^/finished_jobs/([^/]*\.tsv) /path/to/finished_jobs/$1
+<Directory /home/aditya/patent/walkthedinosaur/finished_jobs/>
+    Order deny,allow
+    Allow from all
+</Directory>
+```
+
 You can access the Django app via [http://localhost:8000/batchsql](http://localhost:8000/batchsql).
 Files are served via [http://localhost:8080]
