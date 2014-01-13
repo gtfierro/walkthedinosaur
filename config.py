@@ -15,7 +15,7 @@ def get_config(filename=cfgfile):
     """
     cfg = ConfigParser()
     cfg.read(filename)
-    db = cfg.get('global', 'database')
+    db = CONFIG_PATH_PREFIX + '/' + cfg.get('global', 'database')
     dbtype = cfg.get('global', 'type')
     host = cfg.get('global', 'host')
     user = cfg.get('global', 'user')
