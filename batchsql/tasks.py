@@ -98,12 +98,13 @@ We are very sorry for the onconvenience. If you have any questions, please email
 
 def send_notification(job, filename='', successful=False):
     subject = 'Job {0} has finished'.format(job.id)
+    port = FILESERVER_PORT
     from_email = 'fungpat@berkeley.edu'
     to_email = [job.destination_email]
     if (successful):
         port = FILESERVER_PORT
         url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename[14:])
-        if local == 'no':
+        if not local:
             url = "http://{0}/{1}".format(IP_ADDRESS, filename)
         message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     else:
