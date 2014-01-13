@@ -17,7 +17,7 @@ def get_config(filename=cfgfile):
     cfg.read(filename)
     dbtype = cfg.get('global','type')
     db = cfg.get('global', 'database')
-    if (dbtye == 'sqlite'):
+    if (dbtype == 'sqlite'):
         db = CONFIG_PATH_PREFIX + '/' + cfg.get('global', 'database')
     dbtype = cfg.get('global', 'type')
     host = cfg.get('global', 'host')
