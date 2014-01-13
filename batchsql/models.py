@@ -217,7 +217,7 @@ class TestQuery(models.Model):
             if city:
                 filters.append("(rawlocation.city LIKE '%" + city + "%')")
             if state:
-                filters.append("(rawlocation.state LIKE '%" + state + "%')")
+                filters.append("(rawlocation.state = '" + state + "')")
             if country:
                 filters.append("(rawlocation.country LIKE '%" + country + "%')")
             filterString = "("
