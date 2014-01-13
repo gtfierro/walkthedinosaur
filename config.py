@@ -15,7 +15,10 @@ def get_config(filename=cfgfile):
     """
     cfg = ConfigParser()
     cfg.read(filename)
-    db = CONFIG_PATH_PREFIX + '/' + cfg.get('global', 'database')
+    dbtype = cfg.get('global','type')
+    db = cfg.get('global', 'database')
+    if (dbtye == 'sqlite'):
+        db = CONFIG_PATH_PREFIX + '/' + cfg.get('global', 'database')
     dbtype = cfg.get('global', 'type')
     host = cfg.get('global', 'host')
     user = cfg.get('global', 'user')
