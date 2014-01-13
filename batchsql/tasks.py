@@ -11,7 +11,7 @@ from batchsql import models
 from django.core.mail import send_mail
 import connection
 import config
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from uuid import uuid1
 import csv
 from unidecode import unidecode
@@ -37,7 +37,7 @@ else:
     IP_ADDRESS = m.group(0)
 
 Session = sessionmaker(bind=connection.engine)
-session = Session()
+session_generator = scoped_session(Session)
 
 def create_output(job, result):
     filename = 'finished_jobs/'+str(uuid1())
@@ -63,7 +63,7 @@ def get_job():
         return models.QueuedJob.objects.all().order_by('id')[0]
     return None
 
-def run_job(job):
+def run_job(session, job):
     query = job.query_string
     result = session.execute(query)
     filename = create_output(job, result)
@@ -110,15 +110,12 @@ def send_notification(job, filename='', successful=False):
     else:
         message = ERROR_EMAIL_TEMPLATE.forma(job.id, job.query_string)
     send_mail(subject, message, from_email, to_email, fail_silently=False)
-    #mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
-    #mail_thread.start()
-    #mail_thread.join()
 
 @app.task(max_retries=3)
 def dojob(job):
     try:
         update_job_listing(job, '', 'Executing')
-        filename = run_job(job)
+        filename = run_job(session_generator(), job)
     except (OperationalError, DatabaseError, TimeoutError, DisconnectionError) as e:
         update_job_listing(job, '', 'Halted', str(e))
         try:
@@ -139,20 +136,3 @@ def dojob(job):
     except Exception as e:
         update_job_listing(job, filename, 'Could Not send Email', str(e))
     update_job_listing(job, filename, 'Completed')
-
-#while True:
-#    print 'Attempting to get job...'
-#    job = get_job()
-#    if job:
-#        print 'Got job', job.id
-#        print 'Running job', job.id
-#        filename = run_job(job)
-#        print 'Finished running job', job.id
-#        print 'Notifying user...'
-#        send_notification(job, filename)
-#        print 'Updating job listing...'
-#        update_job_listing(job, filename)
-#        print 'Finished'
-#    else:
-#        print 'Could not find job. Retrying in 5...'
-#        time.sleep(5)
