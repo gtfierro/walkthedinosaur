@@ -101,9 +101,8 @@ def send_notification(job, filename='', successful=False):
     from_email = 'fungpat@berkeley.edu'
     to_email = [job.destination_email]
     if (successful):
-        filename = filename[14:]
         port = FILESERVER_PORT
-        url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename)
+        url = "http://{0}:{1}/{2}".format(IP_ADDRESS, port, filename[14:])
         if local == 'no':
             url = "http://{0}/{1}".format(IP_ADDRESS, filename)
         message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
