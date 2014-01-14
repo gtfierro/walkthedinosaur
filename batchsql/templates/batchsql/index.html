@@ -5,9 +5,15 @@
 <!-- Main component for a primary marketing message or call to action -->
 <div class="jumbotron">
   <h2>About the Database</h2>
-  <p>Here is some information about the database.</p>
-  <h2>Features</h2>
-  <p>Click on "New Search" to get the information you need from the database. Click on "Check Status" to check the search queue and status of a previous search.</p>
+  <p>The database contains information about patents filed between 1980 and 2013. However, comprehensive information is only available from the year 2005. You can search for patent, inventor, lawyer, assignee, claims and citation information using this website.</p>
+  <h2>Important Notes</h2>
+  <ol>
+    <li><p>Not adding any filter will give you ALL the information we have on the field you requested! This means that if you select only the Patent ID, and submit that search with your email address, your resulting file will contain ALL the patent IDs we have! Please try to specify some filters as it greatly reduces time taken for the search and size of the resulting file.</p></li>
+    <li><p>Dates should be entered in the ISO format: YYYY-MM-DD.</p></li>
+    <li><p>If you provide a begin date and do not provide an end Date, the app will consider the end date as the current date. Similarly, if you do not provide a begin date, the app will oconsider the begin date as 1980-1-1.</p></li>
+   </ol>
+  <h2>Get Started</h2>
+  <p>Click on "New Search" to search the the database. Click on "Check Status" to check the search queue and status of a previous search.</p>
   <p style="text-align:center">
     <a class="btn btn-lg btn-primary" href="/batchsql/test" role="button">New Search</a> <a class="btn btn-lg btn-primary" href="/batchsql/status" role="button">Check Status</a>
   </p>
