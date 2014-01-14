@@ -1,7 +1,7 @@
 walkthedinosaur
 ===============
 
-Web-interface for specifying SQL queries that are executed as batch jobs.
+Web-interface for specifying SQL queries that are executed as batch jobs. [Click here](http://54.193.28.22/) to see the latest version of the tool.
 
 * Specify some sort of query on the web side
     * arbitrary query support? need to make database read-only
