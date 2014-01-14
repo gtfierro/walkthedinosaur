@@ -3,40 +3,54 @@
     <head>
         <meta charset='utf-8' />
         <title>Patent Database Search Tool</title>
-        <link href="/static/css/walk.css" rel="stylesheet" />
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<link href="/static/css/walk.css" rel="stylesheet" />
     </head>
     <body>
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="/">Patent Database Search Tool</a>
-          </div>
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-	      {% if page == "home"%}<li class="active">{% else %} <li> {% endif %}<a href="/">Home</a></li>
-	      {% if page == "query"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/test">New Search</a></li>
-	      {% if page == "status"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/status">Check Status</a></li>
-	      <li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Links <b class="caret"></b></a>
-		<ul class="dropdown-menu">
-                  <li><a href="https://github.com/gtfierro/walkthedinosaur" target="_blank">Project on Github</a></li>
-                  <li><a href="https://github.com/funginstitute/publications/raw/master/newinterface/newinterface.pdf" target="_blank">How This Works</a></li>
-                  <li class="divider"></li>
-                  <li><a href="#">Request to Add to Mailing List</a></li>
-		</ul>
-	      </li>
-            </ul>
-          </div><!--/.nav-collapse -->
+      <div id="wrap">
+      <div id="main" class="container clear-top">
+	<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	  <div class="container">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="/">Patent Database Search Tool</a>
+            </div>
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+		{% if page == "home"%}<li class="active">{% else %} <li> {% endif %}<a href="/">Home</a></li>
+		{% if page == "query"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/test">New Search</a></li>
+		{% if page == "status"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/status">Check Status</a></li>
+		<li class="dropdown">
+		  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Other Links <b class="caret"></b></a>
+		  <ul class="dropdown-menu">
+                    <li><a href="https://github.com/gtfierro/walkthedinosaur" target="_blank">Project on Github</a></li>
+                    <li><a href="https://github.com/funginstitute/publications/raw/master/newinterface/newinterface.pdf" target="_blank">How This Works (.pdf File)</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Request to Add to Mailing List</a></li>
+		  </ul>
+		</li>
+              </ul>
+            </div><!--/.nav-collapse -->
+	  </div>
 	</div>
-      </div>
         <div class="container">
           <div id="content">
             {% block content %}{% endblock %}
           </div>
         </div>
+      </div>
+      </div>
+      <footer class="footer">
+	<p style="text-align:center">Built by Aditya Kaulagi and Gabe Fierro.</p>
+	<p style="text-align:center">
+	  <a href-"http://www.funginstitute.berkeley.edu/">Colelam Fung Institute</a> |
+	  <a href="http://coe.berkeley.edu/">College Of Engineering</a> |
+	  <a href="http://berkeley.edu/">UC Berkeley</a>
+	</p>
+	<p style="text-align:center">Copyright &copy 2014 Coleman Fung Institute for Engineering Leadership</p>
+	<br />
+      </footer>
     </body>
 </html>
