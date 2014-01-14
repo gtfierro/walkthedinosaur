@@ -2,6 +2,8 @@
 
 {% block content %}
 
+<script src="/static/js/walk4.js"></script>
+
 <p>Currently, there are {{number_of_queries}} jobs in the queue.</p>
 <p style="text-align:center">
   <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#queue">
@@ -14,23 +16,65 @@
     <table class="table table-bordered">
       <thead>
 	<tr>
-          <td width="15%">ID</td>
-          <td width="35%">Query</td>
-          <td width="15%">Date Submitted</td>
-          <td width="10%">Format</td>
-          <td width="15%">Email</td>
-	  <td width="10%">Status</td>
+          <td width="15%">ID &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedID"></span></a>
+	    <div id="filterQueuedID" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQID" class="sr-only">Filter by ID:</label>
+		<input type="text" class="form-control" id="filterQID" placeholder="Filter ID" tableToFilter="qJobs" colToFilter="qID"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="35%">Query &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedQuery"></span></a>
+	    <div id="filterQueuedQuery" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQQuery" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterQQuery" placeholder="Filter Query" tableToFilter="qJobs" colToFilter="qQuery"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="13%">Date Submitted &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedDate"></span></a>
+	    <div id="filterQueuedDate" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQDate" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterQDate" placeholder="Filter Date" tableToFilter="qJobs" colToFilter="qDate"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="12%">Format &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedFormat"></span></a>
+	    <div id="filterQueuedFormat" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQFormat" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterQFormat" placeholder="Filter Format" tableToFilter="qJobs" colToFilter="qFormat"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="13%">Email &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedEmail"></span></a>
+	    <div id="filterQueuedEmail" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQEmail" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterQEmail" placeholder="Filter Email" tableToFilter="qJobs" colToFilter="qEmail"/>
+	      </div>
+	    </div>
+	  </td>
+	  <td width="12%">Status &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterQueuedStatus"></span></a>
+	    <div id="filterQueuedStatus" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterQStatus" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterQStatus" placeholder="Filter Status" tableToFilter="qJobs" colToFilter="qStatus"/>
+	      </div>
+	    </div>
+	  </td>
 	</tr>
       </thead>
-      <tbody>
+      <tbody id="qJobs">
 	{% for qj in jobs %}
 	<tr {% if qj.job_status == "Executing"  %} class="info" {% endif  %}>
-	  <td width="15%">{{ qj.id }}</td>
-	  <td width="35%">{{ qj.query_string }}</td>
-	  <td width="15%">{{ qj.date_submitted }}</td>
-	  <td width="10%">{{ qj.requested_format }}</td>
-	  <td width="15%">{{ qj.destination_email }}</td>
-	  <td width="10%">{{ qj.job_status }}</td>
+	  <td width="15%" id="qID">{{ qj.id }}</td>
+	  <td width="35%" id="qQuery">{{ qj.query_string }}</td>
+	  <td width="13%" id="qDate">{{ qj.date_submitted }}</td>
+	  <td width="12%" id="qFormat">{{ qj.requested_format }}</td>
+	  <td width="13%" id="qEmail">{{ qj.destination_email }}</td>
+	  <td width="12%" id="qStatus">{{ qj.job_status }}</td>
 	</tr>
 	{% endfor %}
       </tbody>
@@ -50,23 +94,65 @@
     <table class="table table-bordered">
       <thead>
 	<tr>
-	  <td width="25%">ID</td>
-	  <td width="25%">Query</td>
-          <td width="15%">Date Completed</td>
-          <td width="10%">Format</td>
-          <td width="15%">Email</td>
-	  <td width="10%">Status</td>
+	  <td width="15%">ID &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedID"></span></a>
+	    <div id="filterCompletedID" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCID" class="sr-only">Filter by ID:</label>
+		<input type="text" class="form-control" id="filterCID" placeholder="Filter ID" tableToFilter="cJobs" colToFilter="cID"/>
+	      </div>
+	    </div>
+	  </td>
+	  <td width="35%">Query &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedQuery"></span></a>
+	    <div id="filterCompletedQuery" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCQuery" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterCQuery" placeholder="Filter Query" tableToFilter="cJobs" colToFilter="cQuery"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="13%">Date Completed &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedDate"></span></a>
+	    <div id="filterCompletedDate" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCDate" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterCDate" placeholder="Filter Date" tableToFilter="cJobs" colToFilter="cDate"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="12%">Format &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedFormat"></span></a>
+	    <div id="filterCompletedFormat" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCFormat" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterCFormat" placeholder="Filter Format" tableToFilter="cJobs" colToFilter="cFormat"/>
+	      </div>
+	    </div>
+	  </td>
+          <td width="13%">Email &nbsp <a href="#" class="noTop"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedEmail"></span></a>
+	    <div id="filterCompletedEmail" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCEmail" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterCEmail" placeholder="Filter Email" tableToFilter="cJobs" colToFilter="cEmail"/>
+	      </div>
+	    </div>
+	  </td>
+	  <td width="12%">Status &nbsp <a href="#"><span class="glyphicon glyphicon-search" data-toggle="collapse" data-target="#filterCompletedStatus"></span></a>
+	    <div id="filterCompletedStatus" class="collapse"><br />
+	      <div class="form-group">
+		<label for="filterCStatus" class="sr-only">Filter by Email address:</label>
+		<input type="text" class="form-control" id="filterCStatus" placeholder="Filter Status" tableToFilter="cJobs" colToFilter="cStatus"/>
+	      </div>
+	    </div>
+	  </td>
 	</tr>
       </thead>
-      <tbody>
+      <tbody id="cJobs">
 	{% for cj in cjobs %}
 	<tr {% if cj.job_status == "Completed"  %} class="success" {% else %} class="danger" {% endif  %}>
-	  <td width="25%">{{ cj.old_jobid }}</td>
-	  <td width="25%">{{ cj.query_string }}</td>
-	  <td width="15%">{{ cj.date_completed }}</td>
-	  <td width="10%">{{ cj.requested_format }}</td>
-	  <td width="15%">{{ cj.destination_email }}</td>
-	  <td width="10%">{{ cj.job_status }}</td>
+	  <td width="15%" id="cID">{{ cj.old_jobid }}</td>
+	  <td width="35%" id="cQuery">{{ cj.query_string }}</td>
+	  <td width="13%" id="cDate">{{ cj.date_completed }}</td>
+	  <td width="12%" id="cFormat">{{ cj.requested_format }}</td>
+	  <td width="13%" id="cEmail">{{ cj.destination_email }}</td>
+	  <td width="12%" id="cStatus">{{ cj.job_status }}</td>
 	</tr>
 	{% endfor %}
       </tbody>
