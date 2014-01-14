@@ -263,7 +263,7 @@ class TestQuery(models.Model):
                 self.filterTables.append(table)
                 return res
             elif self.haveDate[typeWanted]['to']:
-                fromDateString = '1980-1-1'
+                fromDateString = '1976-1-1'
                 toDateString = self.haveDate[typeWanted]['to']
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
