@@ -7,7 +7,7 @@ window.onload=function() {
 	    var rawmonth = strings[1];
             var rawday   = strings[2];
             var rawyear  = strings[0];
-            var checkdate = new Date(value);
+            var checkdate = new Date(value+" PST");
 	    return ((rawmonth == checkdate.getMonth()+1) &&
 		    (rawday == checkdate.getDate()) &&
 		    (rawyear == checkdate.getFullYear()) && 
