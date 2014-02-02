@@ -66,16 +66,22 @@ run the following in another window:
 celery -A walkthedinosaur worker -l info
 ```
 
-Or you could use the older `run_jobs.py`. IMPORTANT: Support for this will end soon!
+or you can run Celery as a daemon:
 
 ```
-python run_jobs.py
+celery multi restart -A walkthedinosaur worker -l info --logfile=celery.log
 ```
 
 We need a redis server to act as the broker for Celery, so run the following command:
 
 ```
 redis-server
+```
+
+or run as a daemon:
+
+```
+sudo service redis-server start
 ```
 
 To serve up the files, you're going to want to run a basic fileserver.
