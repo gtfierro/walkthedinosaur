@@ -8,9 +8,10 @@
   <p>The database contains information about patents filed between 1976 and 2013. However, the data for patents from 1976 to 2004 has been taken from the <a href="http://thedata.harvard.edu/dvn/dv/patent">Harvard DVN Project</a>. You can search for patent, inventor, lawyer, assignee, claims and citation information using this website.</p>
   <h2>Important Notes</h2>
   <ol>
-    <li><p>Not adding any filter will give you ALL the information we have on the field you requested! This means that if you select only the Patent ID, and submit that search with your email address, your resulting file will contain ALL the patent IDs we have! Please try to specify some filters as it greatly reduces time taken for the search and size of the resulting file.</p></li>
-    <li><p>Dates should be entered in the ISO format: YYYY-MM-DD.</p></li>
-    <li><p>If you provide a begin date and do not provide an end Date, the app will consider the end date as the current date. Similarly, if you do not provide a begin date, the app will oconsider the begin date as 1976-1-1.</p></li>
+    <li><p>This tool searches only in a window of 3 years. You will have to do multiple searches to get information spanning more than 3 years.</p>
+    <li><p>Not adding any filter will give you ALL the information we have on the field you requested in a window of 3 years! This means that if you select only the Patent ID, and submit that search with your email address, your resulting file will contain ALL the IDs of patents that have been granted in the past 3 years! Please try to specify some filters as it greatly reduces time taken for the search and size of the resulting file.</p></li>
+    <li><p>Dates should be entered in the ISO format: YYYY-MM-DD, and should be 3 years apart (Except for citations).</p></li>
+    <li><p>If you provide a begin date and do not provide an end Date, the app will consider the end date as the date exactly three years from the begin date. Similarly, if you do not provide a begin date, the app will oconsider the begin date exactly 3 years before the end date.</p></li>
    </ol>
   <h2>Get Started</h2>
   <p>Click on "New Search" to search the the database. Click on "Check Status" to check the search queue and status of a previous search.</p>

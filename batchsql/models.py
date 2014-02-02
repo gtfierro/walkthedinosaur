@@ -127,9 +127,9 @@ class TestQuery(models.Model):
         self.joinPairs = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
-        self.haveDate = {'file':{'count':0, 'start':'', 'end':''},
-                         'cit':{'count':0, 'start':'', 'end':''},
-                         'grant':{'count':0, 'start':'', 'end':''}}
+        self.haveDate = {'file':{'count':0, 'from':'', 'to':''},
+                         'cit':{'count':0, 'from':'', 'to':''},
+                         'grant':{'count':0, 'from':'', 'to':''}}
         self.locCities = {'inv':'', 'ass':''}
         self.locStates = {'inv':'', 'ass':''}
         self.locCountries = {'inv':'', 'ass':''}
@@ -256,21 +256,27 @@ class TestQuery(models.Model):
             print 'Error, counted date of ', prefix, ' too many times!'
             return ''
         elif force:
-            if self.haveDate[typeWanted]['from'] != '':
+            if self.haveDate[typeWanted]['from']:
                 fromDateString = self.haveDate[typeWanted]['from']
-                toDateString = time.strftime("%Y-%m-%d")
+                partsOfFrom = fromDateString.split('-')
+                toDateString = str(int(partsOfFrom[0])+3)+'-'+partsOfFrom[1]+'-'+partsOfFrom[2]
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
                 return res
             elif self.haveDate[typeWanted]['to']:
-                fromDateString = '1976-1-1'
                 toDateString = self.haveDate[typeWanted]['to']
+                partsOfTo = toDateString.split('-')
+                fromDateString = str(int(partsOfTo[0])-3)+'-'+partsOfTo[1]+'-'+partsOfTo[2]
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
                 return res
             else:
-                print 'Cannot force when you dont have any date!'
-                return ''
+                toDateString = time.strftime('%Y-%m-%d')
+                partsOfTo = toDateString.split('-')
+                fromDateString = str(int(partsOfTo[0])-3)+'-'+partsOfTo[1]+'-'+partsOfTo[2]
+                res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
+                self.filterTables.append(table)
+                return res
         else:
             return ''
 
@@ -416,6 +422,9 @@ class TestQuery(models.Model):
             if self.haveDate[key]['count'] == 1:
                 newKey = self.getNewDateKey(key)
                 self.colsFilters.append(self.getDateFilter(key, POSTVARMAPS[newKey][0], POSTVARMAPS[newKey][1], True))
+        if (self.haveDate['file']['count'] == 0) and (self.haveDate['grant']['count'] == 0):
+            newKey = self.getNewDateKey('grant')
+            self.colsFilters.append(self.getDateFilter('grant', POSTVARMAPS[newKey][0], POSTVARMAPS[newKey][1], True))
 
     def updateJoins(self):
         fdt = list(set(self.fieldTables))
