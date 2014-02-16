@@ -5,7 +5,7 @@ function checkDiff(fromValue, toValue) {
     var toDate = new Date(toValue);
     var diff = toDate.getTime() - fromDate.getTime();
     var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
-    //console.log("diffDays = "+diffDays);
+    //	console.log("diffDays = "+diffDays);
     return (diffDays <= 1096) && (diffDays > 0); //365*3 = 1095, so 1096 accounting for a leap year in between.
 }
 
