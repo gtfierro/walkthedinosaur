@@ -124,7 +124,6 @@ class TestQuery(models.Model):
         self.colsFilters = []
         self.fieldTables = []
         self.filterTables = []
-        self.joinPairs = []
         self.postVar = postvar;
         self.haveLoc = {'inv':0, 'ass':0}
         self.haveDate = {'file':{'count':0, 'from':'', 'to':''},
@@ -198,7 +197,7 @@ class TestQuery(models.Model):
         prefix = string.split('-')[0]
         suffix = string.split('-')[1]
         if (prefix == 'inv') or (prefix == 'ass'):
-            if (suffix == 'country') or (suffix == 'city') or (suffix == 'state'):
+            if (suffix == 'country') or (suffix == 'city') or (suffix == 'state') or (suffix == 'loc'):
                 return True
         else:
             return False
@@ -332,7 +331,12 @@ class TestQuery(models.Model):
                 parts.remove('f')
                 newKey = '-'.join(parts)
                 val = POSTVARMAPS[newKey]
-                self.colsToSearch.append(val[0]+"."+val[1])
+                if self.isLoc(newKey):
+                    self.colsToSearch.append(val[0]+".city")
+                    self.colsToSearch.append(val[0]+".state")
+                    self.colsToSearch.append(val[0]+".country")
+                else:
+                    self.colsToSearch.append(val[0]+"."+val[1])
                 self.fieldTables.append(val[0])
 
     def updateTablesToSearch(self):
@@ -429,13 +433,20 @@ class TestQuery(models.Model):
     def updateJoins(self):
         fdt = list(set(self.fieldTables))
         ftt = list(set(self.filterTables))
-        for t1 in fdt:
-            for t2 in ftt:
-                if (t1,t2) in JOINS.keys():
-                    val = JOINS[(t1,t2)]
-                    self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")
-        for t1 in ftt:
-            for t2 in fdt:
-                if (t1,t2) in JOINS.keys():
-                    val = JOINS[(t1,t2)]
-                    self.colsFilters.append("("+t1+"."+val[0]+" = "+t2+"."+val[1]+")")
+        for t in ftt:
+            fdt.append(t)
+        pairs = []
+        i = 0
+        for t in fdt:
+            if i < len(fdt) - 1:
+                pairs.append([fdt[i],fdt[i+1]])
+            i += 1
+        for p in pairs:
+            p0 = p[0]
+            p1 = p[1]
+            if (p0,p1) in JOINS.keys():                
+                val = JOINS[(p0,p1)]
+                self.colsFilters.append("("+p0+"."+val[0]+" = "+p1+"."+val[1]+")")
+            if (p1,p0) in JOINS.keys():
+                val = JOINS[(p1,p0)]
+                self.colsFilters.append("("+p1+"."+val[0]+" = "+p0+"."+val[1]+")")

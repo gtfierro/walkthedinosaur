@@ -13,10 +13,25 @@ window.onload=function() {
     jQuery.validator.addMethod("RealDate", function(value, element) {
 	if (value != '') {
 	    var strings = value.split('-');
+	    for (var i = 0; i < strings.length; i++) {
+	    	if (strings[i].length == 1) {
+	    		strings[i] = "0"+strings[i];
+	    	}
+	    }
 	    var rawmonth = strings[1];
-            var rawday   = strings[2];
-            var rawyear  = strings[0];
-            var checkdate = new Date(value+" PST");
+        var rawday   = strings[2];
+        var rawyear  = strings[0];
+        var dateString = strings.join("-");
+        var checkdate = new Date(dateString+" PST");
+        var log = "";
+        log += checkdate.toString();
+        log += "rawmonth = "+rawmonth+";";
+        log += " rawday = "+rawday+";";
+        log += " rawyear = "+rawyear+";";
+        log += " checkdate.getMonth() = "+checkdate.getMonth()+";";
+		log += " checkdate.getFullYear() = "+checkdate.getFullYear()+";";
+		log += " checkdate.getDate() = "+checkdate.getDate()+";";
+		console.log(log);        
 	    return ((rawmonth == checkdate.getMonth()+1) &&
 		    (rawday == checkdate.getDate()) &&
 		    (rawyear == checkdate.getFullYear()) && 
