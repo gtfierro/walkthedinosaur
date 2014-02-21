@@ -134,6 +134,7 @@ class TestQuery(models.Model):
         self.locCountries = {'inv':'', 'ass':''}
 
     def getQueryString(self):
+        self.escapeInput()
         self.updateTablesToSearch()
         self.updateColsToSearch()
         self.updateColsFilters()
@@ -183,6 +184,14 @@ class TestQuery(models.Model):
             query += ";"
         return query
 
+    def escapeInput(self):
+        for key in self.postVar.keys():
+            s = self.postVar[key]
+            s = s.replace("'", "\\'")
+            s = s.replace('"','\\"')
+            s = s.replace("\\", "\\\\")
+            self.postVar[key] = s
+
     def isField(self, string):
         prefix = string.split('-')[0]
         return prefix == 'f'
@@ -215,11 +224,11 @@ class TestQuery(models.Model):
             country = self.locCountries[prefix]
             filters = []
             if city:
-                filters.append("(rawlocation.city LIKE '%" + city + "%')")
+                filters.append("(rawlocation.city = '" + city + "')")
             if state:
                 filters.append("(rawlocation.state = '" + state + "')")
             if country:
-                filters.append("(rawlocation.country LIKE '%" + country + "%')")
+                filters.append("(rawlocation.country = '" + country + "')")
             filterString = "("
             i = 0
             for f in filters:
