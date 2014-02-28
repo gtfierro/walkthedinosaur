@@ -14,6 +14,12 @@ years.insert(0, '')
 months.insert(0, '')
 days.insert(0, '')
 
+# Escapes all quotes, double-quotes and escapes
+def escape(s):
+    s = s.replace("'", "\\'")
+    s = s.replace('"','\\"')
+    s = s.replace("\\", "\\\\")
+    return s
 
 def index(request):
     context = {'page': 'home'}
@@ -52,8 +58,8 @@ def test(request):
 def submit_test(request):
     newQuery = TestQuery(request.POST)
     querystring = newQuery.getQueryString()
-    email = request.POST.get('email')
-    requested_format = request.POST.get('dataformat')
+    email = escape(request.POST.get('email'))
+    requested_format = escape(request.POST.get('dataformat'))
     job = QueuedJob.create(None, None, requested_format, email, querystring, 'In Queue')
     job.save()
     dojob.delay(job)

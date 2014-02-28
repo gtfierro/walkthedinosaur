@@ -125,6 +125,7 @@ class TestQuery(models.Model):
         self.fieldTables = []
         self.filterTables = []
         self.postVar = postvar;
+        self.postVarCopy = {}
         self.haveLoc = {'inv':0, 'ass':0}
         self.haveDate = {'file':{'count':0, 'from':'', 'to':''},
                          'cit':{'count':0, 'from':'', 'to':''},
@@ -135,6 +136,7 @@ class TestQuery(models.Model):
 
     def getQueryString(self):
         self.escapeInput()
+        self.postVar = self.postVarCopy
         self.updateTablesToSearch()
         self.updateColsToSearch()
         self.updateColsFilters()
@@ -190,7 +192,7 @@ class TestQuery(models.Model):
             s = s.replace("'", "\\'")
             s = s.replace('"','\\"')
             s = s.replace("\\", "\\\\")
-            self.postVar[key] = s
+            self.postVarCopy[key] = s
 
     def isField(self, string):
         prefix = string.split('-')[0]
