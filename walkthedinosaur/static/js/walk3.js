@@ -105,14 +105,14 @@ window.onload=function() {
     			if (table[j].indexOf("#f-") != -1) {
     				if ($(table[j]).is(':checked')) { 
     					tts += 1;
-    					console.log(table[j]);
+    					//console.log(table[j]);
     					break;
     				}
     			} else {
     				if ($(table[j]).val() != undefined && $(table[j]).val() != "") { 
     					tts += 1; 
-    					console.log(table[j]);
-    					console.log($(table[j]).val());
+    					//console.log(table[j]);
+    					//console.log($(table[j]).val());
     					break;
     				}
     			}
@@ -137,7 +137,7 @@ window.onload=function() {
 	    pri_date_grant_from : {RealDate: true, RelevantDate: true, dateISO: true, GrantThreeYearGap: true},
 	    pri_date_grant_to : {RealDate: true, RelevantDate: true, dateISO: true, GrantThreeYearGap: true},
 	    cit_date_from : {RealDate: true, RelevantDate: true, dateISO: true},
-	    cit_date_to : {RealDate: true, RelveantDate: true, dateISO: true}
+	    cit_date_to : {RealDate: true, RelevantDate: true, dateISO: true}
 	},
 	highlight: function(element) {
             $(element).closest('.form-group').addClass('has-error');
