@@ -2,6 +2,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from tasks import dojob
+from uuid import uuid1
+from datetime import datetime
 
 from batchsql.models import QueuedJob, CompletedJob, TestQuery
 import connection
@@ -57,10 +59,22 @@ def test(request):
 
 def submit_test(request):
     newQuery = TestQuery(request.POST)
-    querystring = newQuery.getQueryString()
+    querystring, isValid = newQuery.getQueryString()
     email = escape(request.POST.get('email'))
     requested_format = escape(request.POST.get('dataformat'))
-    job = QueuedJob.create(None, None, requested_format, email, querystring, 'In Queue')
-    job.save()
-    dojob.delay(job)
+    if (isValid):
+        job = QueuedJob.create(None, None, requested_format, email, querystring, 'In Queue')
+        job.save()
+        dojob.delay(job)
+    else:
+        job = CompletedJob(query_string = querystring, 
+                           requested_format = requested_format,
+                           destination_email = email,
+                           date_submitted = datetime.now(),
+                           date_completed = datetime.now(),
+                           old_jobid = str(uuid1()),
+                           result_filename = "",
+                           job_status = "Halted",
+                           job_error = "Cannot query more than 4 tables!")
+        job.save()
     return HttpResponseRedirect('status')

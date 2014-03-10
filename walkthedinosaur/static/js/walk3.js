@@ -1,4 +1,14 @@
 var dateSuffix = "T00:00:00.000-08:00";
+var patent = ['#f-pri-title', '#f-pri-id', '#f-pri-date-grant','#f-pri-title', '#f-pri-id', '#pri-date-grant', '#pri-date-grant-from', '#pri-date-grant-to', '#pri-country'];
+var appl = ['#f-pri-date-file','#pri-date-file', '#pri-date-file-from', '#pri-date-file-to'];
+var rawinv = ['#f-inv-name-first','#f-inv-name-last','#f-inv-nat','#inv-name-first','#inv-name-last','#inv-nat'];
+var rawloc = ['#f-inv-loc','#inv-city','#inv-state','#inv-country','#f-ass-loc','#ass-city','#ass-state','#ass-country'];
+var rawass = ['#f-ass-type','#f-ass-name-first','#f-ass-name-last','#f-ass-nat','#f-ass-org','#ass-type','#ass-name-first','#ass-name-last','#ass-nat','#ass-org'];
+var rawlaw = ['#f-law-name-first','#f-law-name-last','#f-law-org','#f-law-country','#law-name-first','#law-name-last','#law-org','#law-country'];
+var claim = ['#f-cl-id','#f-cl-text','#f-cl-seq-d','#f-cl-seq','#cl-id','#cl-text','#cl-seq-d','#cl-seq'];
+var uspc = ['#cit-id','#cit-id-pa','#cit-date','#cit-date-from','#cit-date-to','#cit-country','#cit-seq','#f-cit-id','#f-cit-id-pa','#f-cit-date','#f-cit-country','#f-cit-seq'];
+var tables = [patent, appl, rawinv, rawloc, rawass, rawlaw, claim, uspc];
+
 
 function checkDiff(fromValue, toValue) {
     var fromDate = new Date(fromValue);
@@ -85,6 +95,32 @@ window.onload=function() {
 	return true;
     }, "Dates can only be 3 years apart")
     
+    jQuery.validator.addMethod("SpanFourTables", function() {
+    	var tablesLen = tables.length;
+    	var tts = 0;
+    	for (var i = 0; i < tablesLen; i++) {
+    		var table = tables[i];
+    		var len = table.length;
+    		for (var j = 0; j < len; j++) {
+    			if (table[j].indexOf("#f-") != -1) {
+    				if ($(table[j]).is(':checked')) { 
+    					tts += 1;
+    					console.log(table[j]);
+    					break;
+    				}
+    			} else {
+    				if ($(table[j]).val() != undefined && $(table[j]).val() != "") { 
+    					tts += 1; 
+    					console.log(table[j]);
+    					console.log($(table[j]).val());
+    					break;
+    				}
+    			}
+    		}
+    	}
+    	console.log("SpanFourTables="+tts);
+    	return (tts <= 4);
+    }, "Searching too many tables!")
 
     $('#pri-date-grant-from').tooltip();
     $('#pri-date-grant-to').tooltip();
@@ -101,7 +137,7 @@ window.onload=function() {
 	    pri_date_grant_from : {RealDate: true, RelevantDate: true, dateISO: true, GrantThreeYearGap: true},
 	    pri_date_grant_to : {RealDate: true, RelevantDate: true, dateISO: true, GrantThreeYearGap: true},
 	    cit_date_from : {RealDate: true, RelevantDate: true, dateISO: true},
-	    cit_date_to : {RealDate: true, RelevantDate: true, dateISO: true}
+	    cit_date_to : {RealDate: true, RelveantDate: true, dateISO: true}
 	},
 	highlight: function(element) {
             $(element).closest('.form-group').addClass('has-error');
@@ -112,11 +148,18 @@ window.onload=function() {
 	errorElement: 'span',
 	errorClass: 'help-block',
 	errorPlacement: function(error, element) {
-            if(element.parent('.input-group').length) {
-		error.insertAfter(element.parent());
-            } else {
-		error.insertAfter(element);
-            }
+		if(element.parent('.input-group').length) {
+			error.insertAfter(element.parent());
+        } else {
+			error.insertAfter(element);
+        }
 	}
     });
+
+	$('#search-form :input').each(function() {
+		//console.log('Added SpanFourTables to ' + $(this).attr('id'));
+		$(this).rules("add", {
+			SpanFourTables: true
+		});
+	});
 }

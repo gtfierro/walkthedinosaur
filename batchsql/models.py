@@ -13,14 +13,16 @@ FORMAT_CHOICES = (
     (SQL, 'Sqlite file')
 )
 
+# tables: patent, application, rawinventor, rawlocation, rawassignee, rawlawyer, claim, uspatentcitations
+
 POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
                'pri-date-grant':('patent', 'date'),
                'pri-date-grant-from':('patent', 'date'),
                'pri-date-grant-to':('patent', 'date'),
                'pri-date-file':('application','date'),
-               'pri-date-file-from':('patent', 'date'),
-               'pri-date-file-to':('patent', 'date'),
+               'pri-date-file-from':('application', 'date'),
+               'pri-date-file-to':('application', 'date'),
                'pri-country':('patent','country'),
                'inv-name-first':('rawinventor', 'name_first'),
                'inv-name-last':('rawinventor', 'name_last'),
@@ -74,7 +76,7 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
 
 class QueuedJob(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
-    date_submitted = models.DateTimeField(default=datetime.now())
+    date_submitted = models.DateTimeField()
     query_string = models.TextField()
     requested_format = models.CharField(max_length=3,
                                         choices=FORMAT_CHOICES,
@@ -87,6 +89,7 @@ class QueuedJob(models.Model):
             querystring = "select {0} from {1};".format(','.join(fields), tablename)
         job = QueuedJob(id = str(uuid1()),
                         query_string = querystring,
+                        date_submitted = datetime.now(),
                         requested_format = requested_format,
                         destination_email = destination_email,
                         job_status = status)
@@ -184,7 +187,9 @@ class TestQuery(models.Model):
                         query += f + " "
                     i += 1
             query += ";"
-        return query
+        if (len(list(set(self.tablesToSearch))) > 4):
+            return query, False
+        return query, True
 
     def escapeInput(self):
         for key in self.postVar.keys():
@@ -261,6 +266,7 @@ class TestQuery(models.Model):
             toDateString = self.haveDate[typeWanted]['to']
             res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
             self.filterTables.append(table)
+            self.tablesToSearch.append(table)
             return res
         elif self.haveDate[typeWanted]['count'] > 2:
             print 'Error, counted date of ', prefix, ' too many times!'
@@ -272,6 +278,7 @@ class TestQuery(models.Model):
                 toDateString = str(int(partsOfFrom[0])+3)+'-'+partsOfFrom[1]+'-'+partsOfFrom[2]
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
+                self.tablesToSearch.append(table)
                 return res
             elif self.haveDate[typeWanted]['to']:
                 toDateString = self.haveDate[typeWanted]['to']
@@ -279,6 +286,7 @@ class TestQuery(models.Model):
                 fromDateString = str(int(partsOfTo[0])-3)+'-'+partsOfTo[1]+'-'+partsOfTo[2]
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
+                self.tablesToSearch.append(table)
                 return res
             else:
                 toDateString = time.strftime('%Y-%m-%d')
@@ -286,6 +294,7 @@ class TestQuery(models.Model):
                 fromDateString = str(int(partsOfTo[0])-3)+'-'+partsOfTo[1]+'-'+partsOfTo[2]
                 res = "("+table+"."+column+" BETWEEN '"+fromDateString+"' AND '"+toDateString+"')"
                 self.filterTables.append(table)
+                self.tablesToSearch.append(table)
                 return res
         else:
             return ''
