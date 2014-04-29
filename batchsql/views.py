@@ -18,9 +18,9 @@ days.insert(0, '')
 
 # Escapes all quotes, double-quotes and escapes
 def escape(s):
+    s = s.replace("\\", "\\\\")
     s = s.replace("'", "\\'")
     s = s.replace('"','\\"')
-    s = s.replace("\\", "\\\\")
     return s
 
 def index(request):
@@ -37,6 +37,9 @@ def status(request):
                'page': 'status'}
     return render(request, 'batchsql/status.html', context)
 
+def downloads(request):
+    context = {'page':'downloads'}
+    return render(request, 'batchsql/downloads.html', context)
 
 def define_query(request):
     context = {'tables': tables}
@@ -58,7 +61,8 @@ def test(request):
     return render(request, 'batchsql/test.html', context)
 
 def submit_test(request):
-    newQuery = TestQuery(request.POST)
+    datatype = escape(request.POST.get('datatype'))
+    newQuery = TestQuery(request.POST, datatype)
     querystring, isValid = newQuery.getQueryString()
     email = escape(request.POST.get('email'))
     requested_format = escape(request.POST.get('dataformat'))

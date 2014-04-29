@@ -1,0 +1,25 @@
+{% extends "batchsql/base.html" %}
+{% block content %}
+
+<div class="list-group">
+  <a href="http://fungpatdatabase.s3.amazonaws.com/application.tsv" class="list-group-item">Patent Application</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/assignee.tsv" class="list-group-item">Assignee (Disambiguated)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/inventor.tsv" class="list-group-item">Inventor  (Disambiguated)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/lawyer.tsv" class="list-group-item">Lawyer (Disambiguated)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/location.tsv" class="list-group-item">Location (Disambiguated)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/rawassignee.tsv" class="list-group-item">Assigneee (Raw)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/rawinventor.tsv" class="list-group-item">Inventor (Raw)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/rawlawyer.tsv" class="list-group-item">Lawyer (Raw)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/rawlocation.tsv" class="list-group-item">Location (Raw)</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/claim.tsv" class="list-group-item">Claim</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/foreigncitation.tsv" class="list-group-item">Foreign Citation</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/otherreference.tsv" class="list-group-item">Other References</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/patent.tsv" class="list-group-item">Patent</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/usapplicationcitation.tsv" class="list-group-item">US Application Citation</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/uspatentcitation.tsv" class="list-group-item">US Patent Citation</a>
+  <a href="http://fungpatdatabase.s3.amazonaws.com/uspc.tsv" class="list-group-item">USPC</a>
+  
+</div>
+
+
+{% endblock content %}

@@ -4,8 +4,14 @@
 <script src="/static/js/walk2.js"></script>
 <script src="/static/js/walk3.js"></script>
 
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active" id="rawtab"><a href="#raw" data-toggle="tab" >Raw Data</a></li>
+  <li id="distab"><a href="#dis" data-toggle="tab">Disambiguated Data</a></li>
+</ul>
 
-<form id="search-form" class="pri-form" action="submit-test" method="post">
+<div class="tab-content">
+  <div class="tab-pane active" id="raw">
+    <form id="search-form" class="pri-form" action="submit-test" method="post">
   {% csrf_token %}
   <p><h2>Search For:</h2></p>
   <div class="row">
@@ -97,7 +103,7 @@
   <h3>Lawyer Information</h3>
   <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
   <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>
-  <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization">
+  <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization"></p>
   <p><input type="text" name="law-country" id="law-Country" class="form-control" placeholder="Lawyer's Country"></p>
   <h3>Claims Information</h3>
   <p><input type="text" name="cl-id" id="cl-id" class="form-control" placeholder="ID of the Patent Making the Claims"></p>
@@ -128,16 +134,123 @@
     <div class="form-group">
       <label for="dataformat-selector">Data Format<font color="red"> * </font></label>
       <div id="dataformat-selector" class="btn-group">
-	<button id="CSV" type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
-	<button id="TSV" type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
+	<button id="CSV1" type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
+	<button id="TSV1" type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
       </div>
     </div>
-    <input id="dataformat" name="dataformat" type="hidden" id="dataformat" type="hidden" value="CSV"></input>
+    <input id="dataformat" name="dataformat" type="hidden" id="dataformat" value="CSV"></input>
+    <input id="datatype" name="datatype" type="hidden" id="datatype" value="raw"></input>
   </div>
   <br />
   <input class="btn btn-primary" type="submit" value="Submit Job" />
   <br />
   <br />
-</form>
+    </form>
+  </div>
+
+  <div class="tab-pane" id="dis">
+    <form id="search-form" class="pri-form" action="submit-test" method="post">
+  {% csrf_token %}
+  <p><h2>Search For:</h2></p>
+  <div class="row">
+    <div class="col-md-6">
+      <p><b>Primary Information</b></p>
+      <p><input type="checkbox" name="f-pri-title" id="f-pri-title" value="1"> Title of Patent</p>
+      <p><input type="checkbox" name="f-pri-id" id="f-pri-id" value="1"> Patent ID</p>
+      <p><input type="checkbox" name="f-pri-date-file" id="f-pri-date-file" value="1"> Date Patent was Filed</p>
+      <p><input type="checkbox" name="f-pri-date-grant" id="f-pri-date-grant" value="1"> Date Patent was Granted</p>
+      <p><input type="checkbox" name="f-pri-country" id="f-pri-country" value="1"> Country of Patent</p>
+      <p><b>Inventor Information</b></p>
+      <p><input type="checkbox" name="f-inv-name-first" id="f-inv-name-first" value="1"> First Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-name-last" id="f-inv-name-last" value="1"> Last Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-nat" id="f-inv-nat" value="1"> Inventor's Nationality</p>
+      <p><input type="checkbox" name="f-inv-loc" id="f-inv-loc" value="1"> Inventor's Location</p>
+    </div>
+    <div class="col-md-6">
+      <p><b>Assignee Information</b></p>
+      <p><input type="checkbox" name="f-ass-name-first" id="f-ass-name-first" value="1"> First Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-name-last" id="f-ass-name-last" value="1"> Last Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-nat" id="f-ass-nat" value="1"> Assignee's Nationality</p>
+      <p><input type="checkbox" name="f-ass-loc" id="f-ass-loc" value="1"> Assignee's Location</p>
+      <p><input type="checkbox" name="f-ass-org" id="f-ass-org" value="1"> Assignee's organization</p>
+      <p><b>Lawyer Information</b></p>
+      <p><input type="checkbox" name="f-law-name-first" id="f-law-name-first" value="1"> First Name of the Lawyer</p>
+      <p><input type="checkbox" name="f-law-name-last" id="f-law-name-last" value="1"> Last Name of the Lawyer</p>
+      <p><input type="checkbox" name="f-law-country" id="f-law-country" value="1"> Lawyer's Country</p>
+      <p><input type="checkbox" name="f-law-org" id="f-law-org" value="1"> Lawyer's organization</p>
+    </div>
+  </div>
+  <h2>Filters:</h2>
+  <h3>Primary Information</h3>
+  <p><input type="text" name="pri-title" id="pri-title" class="form-control" placeholder="Title of Patent"></p>
+  <p><input type="text" name="pri-id" id="pri-id" class="form-control" placeholder="Patent ID (You can enter multiple IDs separated by commas)."></p>
+  <div class="form-inline">
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_file_from">Date Granted From</label>
+      <input name="pri_date_file_from" id="pri-date-file-from" class="form-control" placeholder="Date Filed From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_file_to">Date Granted To</label>
+      <input name="pri_date_file_to" id="pri-date-file-to" class="form-control" placeholder="Date Filed To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+  </div>
+    <div class="padding"></div>
+  <div class="form-inline">
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_grant_from">Date Granted From</label>
+      <input name="pri_date_grant_from" id="pri-date-grant-from" class="form-control" placeholder="Date Granted From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="pri_date_date_grant_to">Date Granted To</label>
+      <input name="pri_date_grant_to" id="pri-date-grant-to" class="form-control" placeholder="Date Granted To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+    </div>
+  </div>
+  <div class="padding"></div>
+  <p><input type="text" name="pri-country" id="pri-Country" class="form-control" placeholder="Country where patent was filed"></p>
+  <br />
+  <h3>Inventor Information</h3>
+  <p><input type="text" name="inv-name-first" id="inv-name-first" class="form-control" placeholder="First Name of the Inventor" size="64"></p>
+  <p><input type="text" name="inv-name-last" id="inv-name-last" class="form-control" placeholder="Last Name of the Inventor" size="64"></p>
+  <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
+  <p>Location of the Inventor:</p>
+  <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
+  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
+  <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
+  <h3>Assignee Information</h3>
+  <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
+  <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
+  <p><input type="text" name="ass-org" id="ass-org" class="form-control" placeholder="Organization"></p>
+  <p><input type="text" name="ass-nat" id="ass-nat" class="form-control" placeholder="Assignee's Nationality"></p>
+  <p>Location of Assignee:</p>
+  <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
+  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's State"></p>
+  <p><input type="text" name="ass-country" id="ass-Country" class="form-control" placeholder="Assignee's Country"></p>
+  <h3>Lawyer Information</h3>
+  <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
+  <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>
+  <p><input type="text" name="law-org" id="law-org" class="form-control" placeholder="Lawyer's Organization"></p>
+  <p><input type="text" name="law-country" id="law-Country" class="form-control" placeholder="Lawyer's Country"></p>
+  <div class="row">
+    <div class="form-group">
+      <label class="control-label" for="email">Email Address<font color="red"> * </font></label>
+      <input type="text" name="email" id="email" class="form-control" placeholder="Enter email" style="width: 500px" />
+    </div>
+    <div class="form-group">
+      <label for="dataformat-selector">Data Format<font color="red"> * </font></label>
+      <div id="dataformat-selector" class="btn-group">
+  <button id="CSV2" type="button" class="btn btn-default" data-format="CSV">CSV (Comma-separated values)</button>
+  <button id="TSV2" type="button" class="btn btn-default" data-format="TSV">TSV (Tab-separated values)</button>
+      </div>
+    </div>
+    <input id="dataformat" name="dataformat" type="hidden" id="dataformat" value="CSV"></input>
+    <input id="datatype" name="datatype" type="hidden" id="datatype" value="dis"></input>
+  </div>
+  <br />
+  <input class="btn btn-primary" type="submit" value="Submit Job" />
+  <br />
+  <br />
+    </form>
+  </div>
+</div>
 
 {% endblock content %}

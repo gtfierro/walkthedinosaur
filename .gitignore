@@ -34,9 +34,10 @@ nosetests.xml
 .project
 .pydevproject
 
-# Setings with password and keys
+# Setings with password and keys, or installation relative information.
 
 walkthedinosaur/pass_settings.py
+walkthedinosaur/wsgi.py
 
 # Database files
 

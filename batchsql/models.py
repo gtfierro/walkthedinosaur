@@ -121,7 +121,7 @@ class CompletedJob(models.Model):
         return job
 
 class TestQuery(models.Model):
-    def __init__(self, postvar):
+    def __init__(self, postvar, dt):
         self.colsToSearch = []
         self.tablesToSearch = []
         self.colsFilters = []
@@ -136,6 +136,7 @@ class TestQuery(models.Model):
         self.locCities = {'inv':'', 'ass':''}
         self.locStates = {'inv':'', 'ass':''}
         self.locCountries = {'inv':'', 'ass':''}
+        self.datatype = dt;
 
     def getQueryString(self):
         self.escapeInput()
@@ -187,6 +188,8 @@ class TestQuery(models.Model):
                         query += f + " "
                     i += 1
             query += ";"
+        if (self.datatype == "dis"):
+            query = query.replace("raw", "")
         if (len(list(set(self.tablesToSearch))) > 4):
             return query, False
         return query, True

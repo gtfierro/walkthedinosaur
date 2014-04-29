@@ -20,8 +20,8 @@ function checkDiff(fromValue, toValue) {
 }
 
 window.onload=function() {
-    $('#CSV').click();
-
+    $('#CSV1').click(); 
+    
     jQuery.validator.addMethod("RealDate", function(value, element) {
 	if (value != '') {
 	    var strings = value.split('-');
@@ -163,3 +163,11 @@ window.onload=function() {
 		});
 	});
 }
+
+$('#rawtab').click(function(){
+    $('#CSV1').click(); 
+});
+
+$('#distab').click(function(){
+    $('#CSV2').click(); 
+});

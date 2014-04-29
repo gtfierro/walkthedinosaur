@@ -10,4 +10,5 @@ urlpatterns = patterns('',
         url(r'^test$', views.test, name="test"),
         url(r'^submit-test$', views.submit_test, name='submit-test'),
         url(r'^status', views.status, name='status'),
+        url(r'^downloads', views.downloads, name='downloads'),
 )

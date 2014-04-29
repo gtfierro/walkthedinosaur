@@ -20,6 +20,7 @@
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav navbar-right">
 		{% if page == "home"%}<li class="active">{% else %} <li> {% endif %}<a href="/">Home</a></li>
+    {% if page == "downloads"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/downloads">Common Downloads</a></li>
 		{% if page == "query"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/test">New Search</a></li>
 		{% if page == "status"%}<li class="active">{% else %} <li> {% endif %}<a href="/batchsql/status">Check Status</a></li>
 		<li class="dropdown">
