@@ -347,7 +347,7 @@ class TestQuery(models.Model):
             pv = self.postVar[key].encode('ascii')
             if '_' in key:
                 key = key.replace('_','-')
-            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or (key == 'datatype'):
                 pass
             elif self.isField(key):
                 parts = key.split('-')
@@ -368,7 +368,7 @@ class TestQuery(models.Model):
             pv = self.postVar[key].encode('ascii')
             if '_' in key:
                 key = key.replace('_','-')
-            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken'):
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or (key == 'datatype'):
                 pass
             else:
                 if self.isField(key):
@@ -388,7 +388,7 @@ class TestQuery(models.Model):
             pv = self.postVar[key].encode('ascii')
             if '_' in key:
                 key = key.replace('_','-')
-            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or self.isField(key):
+            if (pv == '') or (key == 'email') or (key == 'dataformat') or (key == 'csrfmiddlewaretoken') or self.isField(key) or (key == 'datatype'):
                 self.colsFilters.append('')
             elif self.isLoc(key) or self.isDate(key):
                 prefix = key.split('-')[0]
