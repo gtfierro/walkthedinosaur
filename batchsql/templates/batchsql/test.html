@@ -5,15 +5,15 @@
 <script src="/static/js/walk3.js"></script>
 
 <ul class="nav nav-tabs" id="myTab">
-  <li class="active" id="rawtab"><a href="#raw" data-toggle="tab" >Raw Data</a></li>
-  <li id="distab"><a href="#dis" data-toggle="tab">Disambiguated Data</a></li>
+  <li class="active" id="distab"><a href="#dis" data-toggle="tab">Disambiguated Data</a></li>
+  <li id="rawtab"><a href="#raw" data-toggle="tab">Raw Data</a></li>
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane active" id="raw">
-    <form id="search-form" class="pri-form" action="submit-test" method="post">
+  <div class="tab-pane" id="raw">
+    <form id="search-form" class="pri-form" action="submit-test" method="post" autocomplete="off">
   {% csrf_token %}
-  <p><h2>Search For:</h2></p>
+  <p><h2>Include Columns:</h2></p>
   <div class="row">
     <div class="col-md-4">
       <p><b>Primary Information</b></p>
@@ -25,6 +25,7 @@
       <p><b>Inventor Information</b></p>
       <p><input type="checkbox" name="f-inv-name-first" id="f-inv-name-first" value="1"> First Name of the Inventor</p>
       <p><input type="checkbox" name="f-inv-name-last" id="f-inv-name-last" value="1"> Last Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-id" id="f-inv-id" value="1"> Inventor ID</p>
       <p><input type="checkbox" name="f-inv-nat" id="f-inv-nat" value="1"> Inventor's Nationality</p>
       <p><input type="checkbox" name="f-inv-loc" id="f-inv-loc" value="1"> Inventor's Location</p>
     </div>
@@ -32,6 +33,7 @@
       <p><b>Assignee Information</b></p>
       <p><input type="checkbox" name="f-ass-name-first" id="f-ass-name-first" value="1"> First Name of the Assignee</p>
       <p><input type="checkbox" name="f-ass-name-last" id="f-ass-name-last" value="1"> Last Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-id" id="f-ass-id" value="1"> Assignee ID</p>
       <p><input type="checkbox" name="f-ass-nat" id="f-ass-nat" value="1"> Assignee's Nationality</p>
       <p><input type="checkbox" name="f-ass-loc" id="f-ass-loc" value="1"> Assignee's Location</p>
       <p><input type="checkbox" name="f-ass-org" id="f-ass-org" value="1"> Assignee's organization</p>
@@ -66,14 +68,14 @@
     </div>
     <div class="form-group">
       <label class="sr-only" for="pri_date_date_file_to">Date Granted To</label>
-      <input name="pri_date_file_to" id="pri-date-file-to" class="form-control" placeholder="Date Filed To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+      <input name="pri_date_file_to" id="pri-date-file-to" class="form-control" placeholder="Date Filed To (YYYY-MM-DD)" type="text" size="40" data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", data-delay="{show:100, hide:100}", container="body"/>
     </div>
   </div>
     <div class="padding"></div>
   <div class="form-inline">
     <div class="form-group">
       <label class="sr-only" for="pri_date_date_grant_from">Date Granted From</label>
-      <input name="pri_date_grant_from" id="pri-date-grant-from" class="form-control" placeholder="Date Granted From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", delay="{show:100, hide:100}", container="body"/>
+      <input name="pri_date_grant_from" id="pri-date-grant-from" class="form-control" placeholder="Date Granted From (YYYY-MM-DD)" type="text" size="40", data-placement="auto", title="Please type date in the ISO format (YYYY-MM-DD)", trigger="hover focus click", data-delay="{show:100, hide:100}", container="body"/>
     </div>
     <div class="form-group">
       <label class="sr-only" for="pri_date_date_grant_to">Date Granted To</label>
@@ -89,8 +91,8 @@
   <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
   <p>Location of the Inventor:</p>
   <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
-  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
-  <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
+  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="Inventor's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
+  <p><input type="text" name="inv-country" id="inv-country" class="form-control" placeholder="Inventor's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Assignee Information</h3>
   <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
   <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
@@ -98,8 +100,8 @@
   <p><input type="text" name="ass-nat" id="ass-nat" class="form-control" placeholder="Assignee's Nationality"></p>
   <p>Location of Assignee:</p>
   <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
-  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's State"></p>
-  <p><input type="text" name="ass-country" id="ass-Country" class="form-control" placeholder="Assignee's Country"></p>
+  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
+  <p><input type="text" name="ass-country" id="ass-country" class="form-control" placeholder="Assignee's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Lawyer Information</h3>
   <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
   <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>
@@ -148,10 +150,10 @@
     </form>
   </div>
 
-  <div class="tab-pane" id="dis">
-    <form id="search-form" class="pri-form" action="submit-test" method="post">
+  <div class="tab-pane active" id="dis">
+    <form id="search-form" class="pri-form" action="submit-test" method="post" autocomplete="off">
   {% csrf_token %}
-  <p><h2>Search For:</h2></p>
+  <p><h2>Include Columns:</h2></p>
   <div class="row">
     <div class="col-md-6">
       <p><b>Primary Information</b></p>
@@ -163,6 +165,7 @@
       <p><b>Inventor Information</b></p>
       <p><input type="checkbox" name="f-inv-name-first" id="f-inv-name-first" value="1"> First Name of the Inventor</p>
       <p><input type="checkbox" name="f-inv-name-last" id="f-inv-name-last" value="1"> Last Name of the Inventor</p>
+      <p><input type="checkbox" name="f-inv-id" id="f-inv-id" value="1"> Inventor ID</p>
       <p><input type="checkbox" name="f-inv-nat" id="f-inv-nat" value="1"> Inventor's Nationality</p>
       <p><input type="checkbox" name="f-inv-loc" id="f-inv-loc" value="1"> Inventor's Location</p>
     </div>
@@ -170,6 +173,7 @@
       <p><b>Assignee Information</b></p>
       <p><input type="checkbox" name="f-ass-name-first" id="f-ass-name-first" value="1"> First Name of the Assignee</p>
       <p><input type="checkbox" name="f-ass-name-last" id="f-ass-name-last" value="1"> Last Name of the Assignee</p>
+      <p><input type="checkbox" name="f-ass-id" id="f-ass-id" value="1"> Assignee ID</p>
       <p><input type="checkbox" name="f-ass-nat" id="f-ass-nat" value="1"> Assignee's Nationality</p>
       <p><input type="checkbox" name="f-ass-loc" id="f-ass-loc" value="1"> Assignee's Location</p>
       <p><input type="checkbox" name="f-ass-org" id="f-ass-org" value="1"> Assignee's organization</p>
@@ -214,8 +218,8 @@
   <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
   <p>Location of the Inventor:</p>
   <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
-  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="State"></p>
-  <p><input type="text" name="inv-country" id="inv-Country" class="form-control" placeholder="Country"></p>
+  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="Inventor's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
+  <p><input type="text" name="inv-country" id="inv-country" class="form-control" placeholder="Inventor's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Assignee Information</h3>
   <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
   <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
@@ -223,8 +227,8 @@
   <p><input type="text" name="ass-nat" id="ass-nat" class="form-control" placeholder="Assignee's Nationality"></p>
   <p>Location of Assignee:</p>
   <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
-  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's State"></p>
-  <p><input type="text" name="ass-country" id="ass-Country" class="form-control" placeholder="Assignee's Country"></p>
+  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
+  <p><input type="text" name="ass-country" id="ass-country" class="form-control" placeholder="Assignee's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Lawyer Information</h3>
   <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
   <p><input type="text" name="law-name-last" id="law-name-last" class="form-control" placeholder="Last Name of the Lawyer"></p>

@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect 
 from django.core.urlresolvers import reverse
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from tasks import dojob
 from uuid import uuid1
 from datetime import datetime
@@ -40,6 +40,9 @@ def status(request):
 def downloads(request):
     context = {'page':'downloads'}
     return render(request, 'batchsql/downloads.html', context)
+
+def database(request):
+    return render_to_response('batchsql/database.html')
 
 def define_query(request):
     context = {'tables': tables}

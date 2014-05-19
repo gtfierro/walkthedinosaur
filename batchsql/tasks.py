@@ -83,6 +83,9 @@ Hello,
 
 Your batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
 
+If you do not wish to recive further emails, please notify us at fungpat@berkeley.edu
+or fierro@eecs.berkeley.edu.
+
 - Fung Institute Patent Group
 """
 
@@ -91,7 +94,10 @@ Hello,
 
 Your batch SQL job {0} running the query "{1}" has been halted.
 
-We are very sorry for the onconvenience. If you have any questions, please email patentinterface@gmail.com.
+We are very sorry for the inconvenience. If you have any questions, please email fierro@eecs.berkeley.edu.
+
+If you do not wish to recive further emails, please notify us at fungpat@berkeley.edu
+or fierro@eecs.berkeley.edu.
 
 - Fung Institute Patent Group
 """
@@ -99,7 +105,7 @@ We are very sorry for the onconvenience. If you have any questions, please email
 def send_notification(job, filename='', successful=False):
     subject = 'Job {0} has finished'.format(job.id)
     port = FILESERVER_PORT
-    from_email = 'fungpat@berkeley.edu'
+    from_email = 'fungpatdatabaseinterface@gmail.com'
     to_email = [job.destination_email]
     if (successful):
         port = FILESERVER_PORT
@@ -109,7 +115,7 @@ def send_notification(job, filename='', successful=False):
         message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
     else:
         message = ERROR_EMAIL_TEMPLATE.forma(job.id, job.query_string)
-    send_mail(subject, message, from_email, to_email, fail_silently=False)
+    send_mail(subject, message, from_email, to_email, fail_silently=True)
 
 @app.task(max_retries=3)
 def dojob(job):
@@ -124,15 +130,11 @@ def dojob(job):
             return
         return
 
-# The previous method did not do anything if task failed. Which is why I removed retry 
-# and updated to halted and returned. No returning causes error in send_notification as no
-# filename has been estabilished.       
-#        try:
-#            dojob.retry(args=(job,), exc=e, countdown=5)
-#        except MaxRetriesExceededError as e:
-#            update_job_listing(job, '', 'Halted', str(e))
+    print 'try'
     try:
+        print 'sending notification'
         send_notification(job, filename, True)
     except Exception as e:
+        print e
         update_job_listing(job, filename, 'Could Not send Email', str(e))
     update_job_listing(job, filename, 'Completed')

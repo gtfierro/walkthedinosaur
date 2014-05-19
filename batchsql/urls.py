@@ -11,4 +11,5 @@ urlpatterns = patterns('',
         url(r'^submit-test$', views.submit_test, name='submit-test'),
         url(r'^status', views.status, name='status'),
         url(r'^downloads', views.downloads, name='downloads'),
+        url(r'^database', views.database, name='database'),
 )

@@ -20,7 +20,7 @@ function checkDiff(fromValue, toValue) {
 }
 
 window.onload=function() {
-    $('#CSV1').click(); 
+    $('#CSV2').click(); 
     
     jQuery.validator.addMethod("RealDate", function(value, element) {
 	if (value != '') {
@@ -128,6 +128,10 @@ window.onload=function() {
     $('#pri-date-file-to').tooltip();
     $('#cit-date-from').tooltip();
     $('#cit-date-to').tooltip();
+    $('#inv-state').tooltip();
+    $('#inv-country').tooltip();
+    $('#ass-state').tooltip();
+    $('#ass-country').tooltip();
 
     $('#search-form').validate({
 	rules: {

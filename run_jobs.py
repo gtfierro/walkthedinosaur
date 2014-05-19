@@ -72,6 +72,9 @@ Hello,
 
 Your Batch SQL job {0} running the query "{1}" has finished. Please download at {2}.
 
+If you do not wish to recive further emails, please notify us at fungpat@berkeley.edu
+or fierro@eecs.berkeley.edu.
+
 - Fung Institute Patent Group (run_jobs.py) 
 """
 
@@ -82,12 +85,13 @@ def send_notification(job, filename):
     if not local:
         url = "http://{0}/{1}".format(IP_ADDRESS, filename)
     message = EMAIL_TEMPLATE.format(job.id, job.query_string, url)
-    from_email = 'fungpat@berkeley.edu'
+    from_email = 'fungpatdatabaseinterface@gmail.com'
     to_email = [job.destination_email]
-    #send_mail(subject, message, from_email, to_email, fail_silently=False)
-    mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
-    mail_thread.start()
-    mail_thread.join()
+    print to_email
+    send_mail(subject, message, from_email, to_email, fail_silently=False)
+    #mail_thread = threading.Thread(target = send_mail, args=(subject, message, from_email, to_email), kwargs={"fail_silently":False})
+    #mail_thread.start()
+    #mail_thread.join()
 
 while True:
     print 'Attempting to get job...'
