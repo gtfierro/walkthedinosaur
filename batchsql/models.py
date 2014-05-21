@@ -233,7 +233,7 @@ class TestQuery(models.Model):
             query += ";"
         if (self.datatype == "dis"):
             query = query.replace("raw", "")
-        if (len(list(set(self.tablesToSearch))) > 4):
+        if (len(list(set(self.tablesToSearch))) > 5):
             return query, False
         return query, True
 
@@ -561,10 +561,12 @@ class TestQuery(models.Model):
             p1 = p[1]
             if ((p0,p1) in JOINS_DIS.keys()):                
                 val = JOINS_DIS[(p0,p1)]
+                self.tablesToSearch.append(val)
                 self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
                 self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
             if ((p1,p0) in JOINS_DIS.keys()):
                 val = JOINS_DIS[(p1,p0)]
+                self.tablesToSearch.append(val)
                 self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
                 self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
 
