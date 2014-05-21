@@ -552,7 +552,8 @@ class TestQuery(models.Model):
             i += 1
         if self.datatype == 'raw':
             self.updateRawJoins(pairs)
-        self.updateDisJoins()
+        else:
+            self.updateDisJoins(pairs)
 
     def updateDisJoins(self, pairs):
         for p in pairs:
