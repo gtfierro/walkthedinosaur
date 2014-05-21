@@ -15,10 +15,6 @@ FORMAT_CHOICES = (
 
 # tables: patent, application, rawinventor, rawlocation, rawassignee, rawlawyer, claim, uspatentcitations
 
-ALL_POSTVARMAPS = {'raw':POSTVARMAPS,'dis':POSTVARMAPS_DIS}
-
-ALL_JOINS = {'raw':JOINS,'dis':JOINS_DIS}
-
 POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
                'pri-date-grant':('patent', 'date'),
@@ -116,6 +112,10 @@ JOINS_DIS = {('patent','assignee'):'patent_assignee',
              ('location','assignee'):'location_assignee',
              ('location','inventor'):'location_inventor'
             }
+
+ALL_POSTVARMAPS = {'raw':POSTVARMAPS,'dis':POSTVARMAPS_DIS}
+
+ALL_JOINS = {'raw':JOINS,'dis':JOINS_DIS}
 
 class QueuedJob(models.Model):
     id = models.CharField(max_length=50, primary_key=True)
