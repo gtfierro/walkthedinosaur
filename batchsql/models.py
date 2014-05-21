@@ -26,7 +26,7 @@ POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-country':('patent','country'),
                'inv-name-first':('rawinventor', 'name_first'),
                'inv-name-last':('rawinventor', 'name_last'),
-               'inv-id':('rawinventor', 'id'),
+               'inv-id':('inventor', 'id'),
                'inv-nat':('rawinventor', 'nationality'),
                'inv-loc':('rawlocation', 'location_id'),
                'inv-city':('rawlocation', 'city'),
@@ -35,7 +35,7 @@ POSTVARMAPS = {'pri-title':('patent', 'title'),
                'ass-type':('rawassignee','type'),
                'ass-name-first':('rawassignee','name_first'),
                'ass-name-last':('rawassignee','name_last'),
-               'ass-id':('rawassignee','id'),
+               'ass-id':('assignee','id'),
                'ass-nat':('rawassignee','nationality'),
                'ass-org':('rawassignee','organization'),
                'ass-loc':('rawlocation','location_id'),
@@ -59,6 +59,37 @@ POSTVARMAPS = {'pri-title':('patent', 'title'),
                'cit-seq':('uspatentcitation','sequence')
               }
 
+POSTVARMAPS_DIS = {'pri-title':('patent', 'title'),
+                   'pri-id':('patent','id'),
+                   'pri-date-grant':('patent', 'date'),
+                   'pri-date-grant-from':('patent', 'date'),
+                   'pri-date-grant-to':('patent', 'date'),
+                   'pri-date-file':('application','date'),
+                   'pri-date-file-from':('application', 'date'),
+                   'pri-date-file-to':('application', 'date'),
+                   'pri-country':('patent','country'),
+                   'inv-name-first':('inventor', 'name_first'),
+                   'inv-name-last':('inventor', 'name_last'),
+                   'inv-id':('inventor', 'id'),
+                   'inv-nat':('inventor', 'nationality'),
+                   'inv-city':('location', 'city'),
+                   'inv-state':('location', 'state'),
+                   'inv-country':('location', 'country'),
+                   'ass-type':('assignee','type'),
+                   'ass-name-first':('assignee','name_first'),
+                   'ass-name-last':('assignee','name_last'),
+                   'ass-id':('assignee','id'),
+                   'ass-nat':('assignee','nationality'),
+                   'ass-org':('assignee','organization'),
+                   'ass-city':('location','city'),
+                   'ass-state':('location','state'),
+                   'ass-country':('location','country'),
+                   'law-name-first':('lawyer','name_first'),
+                   'law-name-last':('lawyer','name_last'),
+                   'law-org':('lawyer','organization'),
+                   'law-country':('lawyer','country'),
+                  }
+
 JOINS = {('patent', 'rawinventor'):('id','patent_id'),
          ('patent', 'rawassignee'):('id','patent_id'),
          ('patent', 'claim'):('id','patent_id'),
@@ -75,6 +106,10 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
          ('rawlawyer','application'):('patent_id','patent_id')
         }
 
+JOINS_DIS = {('patent','assignee'):'patent_assignee',
+             ('patent','inventor'):'patent_inventor',
+             ('patent','lawyer'):'patent_lawyer'
+            }
 
 class QueuedJob(models.Model):
     id = models.CharField(max_length=50, primary_key=True)

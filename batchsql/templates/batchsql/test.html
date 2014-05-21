@@ -167,7 +167,6 @@
       <p><input type="checkbox" name="f-inv-name-last" id="f-inv-name-last" value="1"> Last Name of the Inventor</p>
       <p><input type="checkbox" name="f-inv-id" id="f-inv-id" value="1"> Inventor ID</p>
       <p><input type="checkbox" name="f-inv-nat" id="f-inv-nat" value="1"> Inventor's Nationality</p>
-      <p><input type="checkbox" name="f-inv-loc" id="f-inv-loc" value="1"> Inventor's Location</p>
     </div>
     <div class="col-md-6">
       <p><b>Assignee Information</b></p>
@@ -175,8 +174,8 @@
       <p><input type="checkbox" name="f-ass-name-last" id="f-ass-name-last" value="1"> Last Name of the Assignee</p>
       <p><input type="checkbox" name="f-ass-id" id="f-ass-id" value="1"> Assignee ID</p>
       <p><input type="checkbox" name="f-ass-nat" id="f-ass-nat" value="1"> Assignee's Nationality</p>
-      <p><input type="checkbox" name="f-ass-loc" id="f-ass-loc" value="1"> Assignee's Location</p>
-      <p><input type="checkbox" name="f-ass-org" id="f-ass-org" value="1"> Assignee's organization</p>
+      <p><input type="checkbox" name="f-ass-loc" id="f-ass-loc" value="1"> Assignee's Residence Country</p>
+      <p><input type="checkbox" name="f-ass-org" id="f-ass-org" value="1"> Assignee's Organization</p>
       <p><b>Lawyer Information</b></p>
       <p><input type="checkbox" name="f-law-name-first" id="f-law-name-first" value="1"> First Name of the Lawyer</p>
       <p><input type="checkbox" name="f-law-name-last" id="f-law-name-last" value="1"> Last Name of the Lawyer</p>
@@ -216,18 +215,12 @@
   <p><input type="text" name="inv-name-first" id="inv-name-first" class="form-control" placeholder="First Name of the Inventor" size="64"></p>
   <p><input type="text" name="inv-name-last" id="inv-name-last" class="form-control" placeholder="Last Name of the Inventor" size="64"></p>
   <p><input type="text" name="inv-nat" id="inv-nat" class="form-control" placeholder="Nationality of the Inventor"></p>
-  <p>Location of the Inventor:</p>
-  <p><input type="text" name="inv-city" id="inv-city" class="form-control" placeholder="City"></p>
-  <p><input type="text" name="inv-state" id="inv-state" class="form-control" placeholder="Inventor's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
-  <p><input type="text" name="inv-country" id="inv-country" class="form-control" placeholder="Inventor's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Assignee Information</h3>
   <p><input type="text" name="ass-name-first" id="ass-name-first" class="form-control" placeholder="First Name of Assignee"></p>
   <p><input type="text" name="ass-name-last" id="ass-name-last" class="form-control" placeholder="Last Name of Assignee"></p>
   <p><input type="text" name="ass-org" id="ass-org" class="form-control" placeholder="Organization"></p>
   <p><input type="text" name="ass-nat" id="ass-nat" class="form-control" placeholder="Assignee's Nationality"></p>
-  <p>Location of Assignee:</p>
-  <p><input type="text" name="ass-city" id="ass-city" class="form-control" placeholder="Assignee's City"></p>
-  <p><input type="text" name="ass-state" id="ass-state" class="form-control" placeholder="Assignee's state, abbreviated. Example: Texas = TX" data-placement="auto", title="Abbreviated. Example: Texas = TX", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
+  <p>Residence Country of Assignee:</p>
   <p><input type="text" name="ass-country" id="ass-country" class="form-control" placeholder="Assignee's country, abbreviated. Example: United States = US, Japan = JP" data-placement="auto", title="Abbreviated. Example: Unites States = US, Japan = JP", trigger="hover focus click", delay="{show:100, hide:100}", container="body"></p>
   <h3>Lawyer Information</h3>
   <p><input type="text" name="law-name-first" id="law-name-first" class="form-control" placeholder="First Name of the Lawyer"></p>
