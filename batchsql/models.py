@@ -15,9 +15,9 @@ FORMAT_CHOICES = (
 
 # tables: patent, application, rawinventor, rawlocation, rawassignee, rawlawyer, claim, uspatentcitations
 
-ALL_POSTVARMAPS = {'raw':'POSTVARMAPS','dis':'POSTVARMAPS_DIS'}
+ALL_POSTVARMAPS = {'raw':POSTVARMAPS,'dis':POSTVARMAPS_DIS}
 
-ALL_JOINS = {'raw':'JOINS','dis':'JOINS_DIS'}
+ALL_JOINS = {'raw':JOINS,'dis':JOINS_DIS}
 
 POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
