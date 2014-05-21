@@ -539,7 +539,7 @@ class TestQuery(models.Model):
             newKey = self.getNewDateKey('grant')
             self.colsFilters.append(self.getDateFilter('grant', ALL_POSTVARMAPS[self.datatype][newKey][0], ALL_POSTVARMAPS[self.datatype][newKey][1], True))
 
-    def updateJoins(self, pairs):
+    def updateJoins(self):
         fdt = list(set(self.fieldTables))
         ftt = list(set(self.filterTables))
         for t in ftt:
