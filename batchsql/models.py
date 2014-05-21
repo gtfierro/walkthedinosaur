@@ -15,6 +15,10 @@ FORMAT_CHOICES = (
 
 # tables: patent, application, rawinventor, rawlocation, rawassignee, rawlawyer, claim, uspatentcitations
 
+ALL_POSTVARMAPS = {'raw':'POSTVARMAPS','dis':'POSTVARMAPS_DIS'}
+
+ALL_JOINS = {'raw':'JOINS','dis':'JOINS_DIS'}
+
 POSTVARMAPS = {'pri-title':('patent', 'title'),
                'pri-id':('patent','id'),
                'pri-date-grant':('patent', 'date'),
@@ -108,7 +112,9 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
 
 JOINS_DIS = {('patent','assignee'):'patent_assignee',
              ('patent','inventor'):'patent_inventor',
-             ('patent','lawyer'):'patent_lawyer'
+             ('patent','lawyer'):'patent_lawyer',
+             ('location','assignee'):'location_assignee',
+             ('location','inventor'):'location_inventor'
             }
 
 class QueuedJob(models.Model):
@@ -265,6 +271,49 @@ class TestQuery(models.Model):
         return ' LIKE '
 
     def getLocFilter(self, prefix):
+        if self.datatype == 'raw':
+            return self.getRawLocFilter(prefix)
+        return self.getDisLocFilter(prefix)
+
+    def getDisLocFilter(self,prefix):
+        if (self.haveLoc[prefix] >= 1):
+            city = self.locCities[prefix]
+            state = self.locStates[prefix]
+            country = self.locCountries[prefix]
+            filters = []
+            if city:
+                filters.append("(location.city = '" + city + "')")
+            if state:
+                filters.append("(location.state = '" + state + "')")
+            if country:
+                filters.append("(location.country = '" + country + "')")
+            filterString = "("
+            i = 0
+            for f in filters:
+                if i == 0:
+                    filterString += f
+                else:
+                    filterString += " AND " + f
+                i += 1
+            if prefix == 'inv':
+                filterString += " AND location_inventor.inventor_id = inventor.id AND location_inventor.location_id = location.id"
+                self.tablesToSearch.append('inventor')
+                self.tablesToSearch.append('location_inventor')
+                self.filterTables.append('inventor')
+            elif prefix == 'ass':
+                filterString += " AND location_assignee.assignee_id = assignee.id AND location_assignee.location_id = location.id"
+                self.tablesToSearch.append('assignee')
+                self.tablesToSearch.append('location_assignee')
+                self.filterTables.append('assignee')
+            else:
+                print "Error! Wrong type of thing being searched for locaiton!"
+            filterString += ")"
+            self.tablesToSearch.append("location")
+            return filterString
+        else:
+            return ""
+
+    def getRawLocFilter(self, prefix):
         if (self.haveLoc[prefix] >= 1):
             city = self.locCities[prefix]
             state = self.locStates[prefix]
@@ -390,7 +439,7 @@ class TestQuery(models.Model):
                 parts = key.split('-')
                 parts.remove('f')
                 newKey = '-'.join(parts)
-                val = POSTVARMAPS[newKey]
+                val = ALL_POSTVARMAPS[self.datatype][newKey]
                 if self.isLoc(newKey):
                     self.colsToSearch.append(val[0]+".city")
                     self.colsToSearch.append(val[0]+".state")
@@ -412,10 +461,10 @@ class TestQuery(models.Model):
                     parts = key.split('-')
                     parts.remove('f')
                     newKey = '-'.join(parts)
-                    self.fieldTables.append(POSTVARMAPS[newKey][0])
+                    self.fieldTables.append(ALL_POSTVARMAPS[self.datatype][newKey][0])
                 else:
                     newKey = key
-                self.tablesToSearch.append(POSTVARMAPS[newKey][0])
+                self.tablesToSearch.append(ALL_POSTVARMAPS[self.datatype][newKey][0])
 
     def updateColsFilters(self):
         keys = self.postVar.keys()
@@ -433,7 +482,7 @@ class TestQuery(models.Model):
                 if self.isDate(key):
                     self.processDateInput(key, pv)
                     typeWanted = self.getTypeWanted(key)
-                    self.colsFilters.append(self.getDateFilter(typeWanted, POSTVARMAPS[key][0], POSTVARMAPS[key][1]))
+                    self.colsFilters.append(self.getDateFilter(typeWanted, ALL_POSTVARMAPS[self.datatype][key][0], ALL_POSTVARMAPS[self.datatype][key][1]))
                 else:
                     self.haveLoc[prefix] += 1
                     if suffix == 'city':
@@ -446,11 +495,11 @@ class TestQuery(models.Model):
                         print "Error! Invalid input for ", prefix, " location."
                     self.colsFilters.append(self.getLocFilter(prefix))
             else:
-                if not POSTVARMAPS[key]:
+                if not ALL_POSTVARMAPS[self.datatype][key]:
                     print "Error, case for col=", key, " not handled!"
                 else:
                     comparator = self.getComparator(key)
-                    val = POSTVARMAPS[key]
+                    val = ALL_POSTVARMAPS[self.datatype][key]
                     self.filterTables.append(val[0])
                     if comparator == " LIKE ":
                         if key == 'pri-id' and pv.contains(','):
@@ -485,12 +534,12 @@ class TestQuery(models.Model):
         for key in self.haveDate.keys():
             if self.haveDate[key]['count'] == 1:
                 newKey = self.getNewDateKey(key)
-                self.colsFilters.append(self.getDateFilter(key, POSTVARMAPS[newKey][0], POSTVARMAPS[newKey][1], True))
+                self.colsFilters.append(self.getDateFilter(key, ALL_POSTVARMAPS[self.datatype][newKey][0], ALL_POSTVARMAPS[self.datatype][newKey][1], True))
         if (self.haveDate['file']['count'] == 0) and (self.haveDate['grant']['count'] == 0):
             newKey = self.getNewDateKey('grant')
-            self.colsFilters.append(self.getDateFilter('grant', POSTVARMAPS[newKey][0], POSTVARMAPS[newKey][1], True))
+            self.colsFilters.append(self.getDateFilter('grant', ALL_POSTVARMAPS[self.datatype][newKey][0], ALL_POSTVARMAPS[self.datatype][newKey][1], True))
 
-    def updateJoins(self):
+    def updateJoins(self, pairs):
         fdt = list(set(self.fieldTables))
         ftt = list(set(self.filterTables))
         for t in ftt:
@@ -501,6 +550,20 @@ class TestQuery(models.Model):
             if i < len(fdt) - 1:
                 pairs.append([fdt[i],fdt[i+1]])
             i += 1
+        if self.datatype == 'raw':
+            self.updateRawJoins(pairs)
+        self.updateDisJoins()
+
+    def updateDisJoins(self, pairs):
+        for p in pairs:
+            p0 = p[0]
+            p1 = p[1]
+            if ((p0,p1) in JOINS_DIS.keys()) or ((p1,p0) in JOINS_DIS.keys()):                
+                val = JOINS_DIS[(p0,p1)]
+                self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
+                self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
+
+    def updateRawJoins(self, pairs):
         for p in pairs:
             p0 = p[0]
             p1 = p[1]
