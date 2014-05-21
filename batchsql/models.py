@@ -559,8 +559,12 @@ class TestQuery(models.Model):
         for p in pairs:
             p0 = p[0]
             p1 = p[1]
-            if ((p0,p1) in JOINS_DIS.keys()) or ((p1,p0) in JOINS_DIS.keys()):                
+            if ((p0,p1) in JOINS_DIS.keys()):                
                 val = JOINS_DIS[(p0,p1)]
+                self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
+                self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
+            else if ((p1,p0) in JOINS_DIS.keys()):
+                val = JOINS_DIS[(p1,p0)]
                 self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
                 self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
 
