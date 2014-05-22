@@ -466,7 +466,6 @@ class TestQuery(models.Model):
                 else:
                     newKey = key
                 self.tablesToSearch.append(ALL_POSTVARMAPS[self.datatype][newKey][0])
-        raise Exception("Check fieldTables")
 
     def updateColsFilters(self):
         keys = self.postVar.keys()
@@ -568,7 +567,7 @@ class TestQuery(models.Model):
         for t in ftt:
             fdt.append(t)
         pairs = []
-        fdt = list(set(ftt))
+        fdt = list(set(fdt))
         if ('patent' in fdt):
             fdt.remove('patent')
             for t in fdt:
@@ -578,7 +577,6 @@ class TestQuery(models.Model):
             if i < len(fdt) - 1:
                 pairs.append([fdt[i],fdt[i+1]])
             i += 1
-        raise Exception("Check pairs!")
         return pairs
 
     def updateDisJoins(self, pairs):
@@ -587,14 +585,20 @@ class TestQuery(models.Model):
             p1 = p[1]
             if ((p0,p1) in JOINS_DIS.keys()):                
                 val = JOINS_DIS[(p0,p1)]
-                self.tablesToSearch.append(val)
-                self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
-                self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
+                if (val == ('id','patent_id')):
+                    self.colsFilters.append("("+p0+"."+val[0]+" = "+p1+"."+val[1]+")")                
+                else:
+                    self.tablesToSearch.append(val)
+                    self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
+                    self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
             if ((p1,p0) in JOINS_DIS.keys()):
                 val = JOINS_DIS[(p1,p0)]
-                self.tablesToSearch.append(val)
-                self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
-                self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
+                if (val == ('id','patent_id')):
+                    self.colsFilters.append("("+p1+"."+val[0]+" = "+p0+"."+val[1]+")")                
+                else:
+                    self.tablesToSearch.append(val)
+                    self.colsFilters.append("("+val+"."+p0+"_id"+" = "+p0+".id)")
+                    self.colsFilters.append("("+val+"."+p1+"_id"+" = "+p1+".id)")
 
     def updateRawJoins(self, pairs):
         for p in pairs:
