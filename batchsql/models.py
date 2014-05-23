@@ -466,6 +466,7 @@ class TestQuery(models.Model):
                 else:
                     newKey = key
                 self.tablesToSearch.append(ALL_POSTVARMAPS[self.datatype][newKey][0])
+        raise Exception("Check fieldTables")
 
     def updateColsFilters(self):
         keys = self.postVar.keys()
@@ -576,7 +577,6 @@ class TestQuery(models.Model):
         for t in fdt:
             if i < len(fdt) - 1:
                 pairs.append([fdt[i],fdt[i+1]])
-                print fdt[i],",",fdt[i+1]
             i += 1
         raise Exception("Check pairs!")
         return pairs
