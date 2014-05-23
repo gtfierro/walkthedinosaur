@@ -558,7 +558,6 @@ class TestQuery(models.Model):
         for t in fdt:
             if i < len(fdt) - 1:
                 pairs.append([fdt[i],fdt[i+1]])
-                print fdt[i],",",fdt[i+1]
             i += 1
         return pairs
 
@@ -579,8 +578,8 @@ class TestQuery(models.Model):
                 pairs.append([fdt[i],fdt[i+1]])
                 print fdt[i],",",fdt[i+1]
             i += 1
+        raise Exception("Check pairs!")
         return pairs
-
 
     def updateDisJoins(self, pairs):
         for p in pairs:
