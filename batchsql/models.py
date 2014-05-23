@@ -542,11 +542,11 @@ class TestQuery(models.Model):
 
     def updateJoins(self):
         if self.datatype == 'raw':
-            self.updateRawJoins(self.makePairs())
+            self.updateRawJoins(self.makePairsRaw())
         else:
             if ('patent' not in fdt) and ('patent' not in ftt):
                 self.fieldTables.append('patent')  
-            self.updateDisJoins(self.makePairs())
+            self.updateDisJoins(self.makePairsDis())
 
     def makePairsRaw(self):
         fdt = list(set(self.fieldTables))
