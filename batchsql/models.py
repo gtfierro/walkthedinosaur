@@ -544,7 +544,7 @@ class TestQuery(models.Model):
         if self.datatype == 'raw':
             self.updateRawJoins(self.makePairsRaw())
         else:
-            if ('patent' not in fdt) and ('patent' not in ftt):
+            if ('patent' not in self.fieldTables) and ('patent' not in self.filterTables):
                 self.fieldTables.append('patent')  
             self.updateDisJoins(self.makePairsDis())
 
