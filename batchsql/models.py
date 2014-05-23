@@ -109,6 +109,7 @@ JOINS = {('patent', 'rawinventor'):('id','patent_id'),
 JOINS_DIS = {('patent','assignee'):'patent_assignee',
              ('patent','inventor'):'patent_inventor',
              ('patent','lawyer'):'patent_lawyer',
+             ('patent', 'application'):('id','patent_id'),
              ('location','assignee'):'location_assignee',
              ('location','inventor'):'location_inventor'
             }
@@ -540,6 +541,14 @@ class TestQuery(models.Model):
             self.colsFilters.append(self.getDateFilter('grant', ALL_POSTVARMAPS[self.datatype][newKey][0], ALL_POSTVARMAPS[self.datatype][newKey][1], True))
 
     def updateJoins(self):
+        if self.datatype == 'raw':
+            self.updateRawJoins(self.makePairs())
+        else:
+            if ('patent' not in fdt) and ('patent' not in ftt):
+                self.fieldTables.append('patent')  
+            self.updateDisJoins(self.makePairs())
+
+    def makePairsRaw(self):
         fdt = list(set(self.fieldTables))
         ftt = list(set(self.filterTables))
         for t in ftt:
@@ -549,11 +558,29 @@ class TestQuery(models.Model):
         for t in fdt:
             if i < len(fdt) - 1:
                 pairs.append([fdt[i],fdt[i+1]])
+                print fdt[i],",",fdt[i+1]
             i += 1
-        if self.datatype == 'raw':
-            self.updateRawJoins(pairs)
-        else:
-            self.updateDisJoins(pairs)
+        return pairs
+
+    def makePairsDis(self):
+        fdt = list(set(self.fieldTables))
+        ftt = list(set(self.filterTables))
+        for t in ftt:
+            fdt.append(t)
+        pairs = []
+        fdt = list(set(ftt))
+        if ('patent' in fdt):
+            fdt.remove('patent')
+            for t in fdt:
+                pairs.append(['patent',t])
+        i = 0
+        for t in fdt:
+            if i < len(fdt) - 1:
+                pairs.append([fdt[i],fdt[i+1]])
+                print fdt[i],",",fdt[i+1]
+            i += 1
+        return pairs
+
 
     def updateDisJoins(self, pairs):
         for p in pairs:
